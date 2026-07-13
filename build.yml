@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline (Import -> Group -> Note -> Email -> Dashboard)
+        run: |
+          python3 src/build_reviews.py
+          python3 src/build_note.py
+          python3 src/build_pdf.py
+          python3 scripts/inject_data.py
+
+      - name: Smoke check (artifacts exist, note <= 250 words, no PII token)
+        run: |
+          test -f index.html
+          test -f output/weekly_note.pdf
+          test -f output/weekly_note.md
+          test -f output/email_draft.txt
+          words=$(grep -oE "\w+" output/weekly_note.md | wc -l)
+          echo "note words: $words"
+          [ "$words" -le 250 ]
+          ! grep -q "__DATA__" index.html
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-pulse-output
+          path: |
+            index.html
+            output/
+            data/reviews_sample.csv

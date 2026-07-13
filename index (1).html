@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Review Pulse — INDmoney</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#5A31F4; --violet-d:#3B1FA8; --violet-soft:#F1EDFF;
+  --ink:#15131F; --mute:#6B6780; --line:#E7E3F3;
+  --neg:#D7263D; --warn:#D88A00; --pos:#159D8C;
+  --bg:#FBFAFF; --panel:#FFFFFF; --panel-2:#F6F4FF;
+  --shadow:0 1px 2px rgba(20,16,40,.04), 0 10px 28px rgba(60,31,168,.06);
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --violet:#9B86FF; --violet-d:#7C63F0; --violet-soft:#241D44;
+  --ink:#F3F1FA; --mute:#A39FBE; --line:#2A2444;
+  --neg:#FF6B7E; --warn:#F0B53A; --pos:#3FD3BF;
+  --bg:#0C0A18; --panel:#161130; --panel-2:#1C1640;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 32px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1140px;margin:0 auto;padding:22px 20px 64px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;border-radius:16px;
+  background:var(--panel);box-shadow:var(--shadow);border:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--violet),var(--violet-d));
+  display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:700;font-size:18px;
+  box-shadow:0 6px 16px rgba(90,49,244,.35)}
+.brand h1{font-family:var(--display);font-size:18px;font-weight:700;margin:0;letter-spacing:-.3px}
+.brand .sub{font-size:11.5px;color:var(--mute);margin-top:1px}
+.ctrls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.lbl{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.09em;font-weight:600;margin-bottom:5px;display:block}
+select{font-family:var(--body);font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 12px;cursor:pointer}
+select:hover{border-color:var(--violet)}
+.seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--mute);font-family:var(--body);font-size:12.5px;font-weight:500;
+  padding:6px 11px;border-radius:8px;cursor:pointer}
+.seg button.on{background:var(--violet);color:#fff}
+.toggle{width:42px;height:42px;display:grid;place-items:center;border-radius:11px;background:var(--panel-2);
+  border:1px solid var(--line);cursor:pointer;font-size:17px}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:16px}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px;box-shadow:var(--shadow)}
+.kpi .big{font-family:var(--display);font-size:25px;font-weight:700;line-height:1;color:var(--violet)}
+.kpi .cap{font-size:11px;color:var(--mute);margin-top:7px}
+.kpi .delta{font-size:12px;font-weight:600;margin-left:6px}
+.up{color:var(--pos)} .down{color:var(--neg)} .flat{color:var(--mute)}
+
+.grid{display:grid;grid-template-columns:1.62fr 1fr;gap:16px;margin-top:16px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.card h2{font-family:var(--display);font-size:13px;font-weight:600;margin:0 0 4px;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.card h2 .tick{width:7px;height:7px;border-radius:2px;background:var(--violet)}
+.card .hint{font-size:11px;color:var(--mute);margin:0 0 12px}
+
+/* hero */
+.headline{background:var(--violet-soft);border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin-bottom:14px;
+  font-size:13.5px;color:var(--ink)}
+.headline b{color:var(--violet)}
+.pulse-svg{width:100%;height:150px;display:block;overflow:visible}
+.pulse-path{fill:none;stroke:var(--violet);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 5px 12px rgba(90,49,244,.32))}
+.pulse-dot{fill:var(--violet);stroke:var(--panel);stroke-width:3}
+.grid-line{stroke:var(--line);stroke-width:1}
+.axis{font-family:var(--mono);font-size:9px;fill:var(--mute)}
+.legend{display:flex;gap:18px;font-size:11px;color:var(--mute);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.area{height:9px;border-radius:2px;opacity:.5}
+
+/* priority themes */
+.theme{border-top:1px solid var(--line);padding:13px 0}
+.theme:first-of-type{border-top:none}
+.theme .head{display:flex;align-items:center;gap:11px;cursor:pointer}
+.rank{width:26px;height:26px;flex:none;border-radius:8px;background:var(--violet);color:#fff;
+  font-family:var(--display);font-weight:700;font-size:13px;display:grid;place-items:center}
+.theme .name{font-weight:600;font-size:14px;flex:1;min-width:0}
+.prio{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--violet);background:var(--violet-soft);
+  padding:3px 8px;border-radius:7px;white-space:nowrap}
+.theme .meta{font-size:11.5px;color:var(--mute);margin:7px 0 0 37px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spark{margin:8px 0 0 37px}
+.bar{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:8px 0 0 37px;max-width:calc(100% - 37px)}
+.bar>span{display:block;height:100%;border-radius:4px}
+.caret{color:var(--mute);font-size:12px;transition:transform .2s;margin-left:4px}
+.theme.open .caret{transform:rotate(90deg)}
+.drill{margin:10px 0 0 37px;display:none;border-left:2px solid var(--line);padding-left:12px}
+.theme.open .drill{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1}}
+.rev{padding:7px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.rev:last-child{border-bottom:none}
+.rev .r1{display:flex;justify-content:space-between;color:var(--mute);font-size:10.5px;font-family:var(--mono)}
+.rev .r2{margin-top:2px;color:var(--ink)}
+.stars{color:var(--warn);letter-spacing:1px}
+
+/* priority board + movers */
+.board .row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.board .nm{font-size:12px;flex:none;width:104px}
+.board .track{flex:1;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.board .track>span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet),var(--violet-d))}
+.board .val{font-family:var(--mono);font-size:11px;color:var(--mute);width:34px;text-align:right}
+.mover{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px}
+.mover:first-of-type{border-top:none}
+.chip{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+.chip.r{color:var(--neg);background:color-mix(in srgb,var(--neg) 12%,transparent)}
+.chip.f{color:var(--pos);background:color-mix(in srgb,var(--pos) 14%,transparent)}
+.chip.z{color:var(--mute);background:var(--panel-2)}
+
+/* quotes + actions */
+.quote{border-left:3px solid var(--violet);padding:1px 0 1px 13px;margin:0 0 14px}
+.quote p{margin:0;font-size:13.5px}
+.quote .by{font-size:11px;color:var(--mute);margin-top:5px;font-style:italic}
+ol.actions{margin:0;padding:0;list-style:none;counter-reset:a}
+ol.actions li{counter-increment:a;position:relative;padding:11px 0 11px 34px;font-size:13px;border-top:1px solid var(--line)}
+ol.actions li:first-child{border-top:none}
+ol.actions li::before{content:counter(a);position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:7px;
+  background:var(--violet);color:#fff;font-family:var(--display);font-weight:700;font-size:11px;display:grid;place-items:center}
+
+/* email */
+.mailbox{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;
+  white-space:pre-wrap;max-height:300px;overflow:auto;line-height:1.5}
+.mailbox .subj{font-weight:600;color:var(--violet);margin-bottom:8px}
+.acts{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.toinput{width:100%;font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--panel-2);
+  border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+.toinput:focus{outline:none;border-color:var(--violet)}
+.btn{font-family:var(--body);font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--violet)}
+.btn.primary{background:var(--violet);color:#fff;border-color:var(--violet)}
+.btn.primary:hover{background:var(--violet-d)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);
+  color:var(--bg);padding:10px 18px;border-radius:10px;font-size:13px;transition:.25s;pointer-events:none;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer.note{margin-top:22px;font-size:11px;color:var(--mute);line-height:1.7;text-align:center}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;color:var(--violet);background:var(--violet-soft);padding:3px 9px;border-radius:20px;margin:0 3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">IND</div>
+      <div><h1>Review Pulse</h1><div class="sub">Weekly intelligence from App Store + Play Store reviews · INDmoney</div></div>
+    </div>
+    <div class="ctrls">
+      <div><span class="lbl">Source</span>
+        <div class="seg" id="srcSeg">
+          <button data-s="All" class="on">All</button>
+          <button data-s="App Store">App Store</button>
+          <button data-s="Play Store">Play Store</button>
+        </div>
+      </div>
+      <div><span class="lbl">Pulse week</span><select id="weekSel"></select></div>
+      <div><span class="lbl">Theme</span><div class="toggle" id="themeBtn" title="Light / dark">◐</div></div>
+    </div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="card">
+        <h2><span class="tick"></span>12-week sentiment pulse</h2>
+        <p class="hint">Average rating per week over the negative-share band. The selected week is highlighted.</p>
+        <div class="headline" id="headline"></div>
+        <svg class="pulse-svg" id="pulse" viewBox="0 0 640 150" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><i style="background:var(--violet)"></i>Avg rating (auto-zoomed)</span>
+          <span><i class="area" style="background:var(--neg)"></i>Negative share</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>Top 3 themes — by priority</h2>
+        <p class="hint">Priority blends how negative a theme is, its share of volume, and week-over-week momentum. Tap a theme to read the underlying reviews.</p>
+        <div id="themes"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>In users' words</h2>
+        <div id="quotes"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>Three action ideas</h2>
+        <ol class="actions" id="actions"></ol>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card board">
+        <h2><span class="tick"></span>Priority board — all themes</h2>
+        <p class="hint">All 5 themes, ranked 0–100.</p>
+        <div id="board"></div>
+      </div>
+      <div class="card">
+        <h2><span class="tick"></span>Movers — week over week</h2>
+        <div id="movers"></div>
+      </div>
+      <div class="card">
+        <h2><span class="tick"></span>Email draft</h2>
+<p class="hint">Set recipient below, then open directly in Gmail or copy the full text.</p>
+        <label class="lbl" for="toInput">Send to</label>
+        <input id="toInput" class="toinput" type="email" autocomplete="email" placeholder="you@example.com" spellcheck="false"/>
+        <div class="mailbox" id="mailbox"></div>
+        <div class="acts">
+          <button class="btn primary" id="copyBtn">Copy email</button>
+          <a class="btn" id="gmailBtn" target="_blank" rel="noopener" href="#">Open in Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">
+    <span class="pill">Public reviews only</span><span class="pill">No PII</span>
+    <span class="pill">Max 5 themes</span><span class="pill">Note ≤250 words</span><br/>
+    Built for the LIP challenge · Product: INDmoney · Redacted sample export, 12-week window.
+  </footer>
+</div>
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+const REVIEWS = [{"date": "2026-03-30", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-03-30", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Low cost for US stocks", "text": "Fractional US investing from a small amount with low fees is very useful.", "theme": "Charges & Fees"}, {"date": "2026-03-31", "week": "Mar 30-05", "source": "Play Store", "rating": 2, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-01", "week": "Mar 30-05", "source": "App Store", "rating": 2, "title": "Stuck on splash", "text": "App hangs on the loading screen and I have to force close and retry.", "theme": "App Performance & Reliability"}, {"date": "2026-04-01", "week": "Mar 30-05", "source": "Play Store", "rating": 2, "title": "FX markup too high", "text": "The currency conversion charge on US funding eats into returns. Wish it was shown upfront.", "theme": "Charges & Fees"}, {"date": "2026-04-01", "week": "Mar 30-05", "source": "App Store", "rating": 1, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-04-01", "week": "Mar 30-05", "source": "Play Store", "rating": 5, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-04-02", "week": "Mar 30-05", "source": "App Store", "rating": 1, "title": "App keeps syncing", "text": "Every time I open the app it gets stuck on syncing and I cannot place an order.", "theme": "App Performance & Reliability"}, {"date": "2026-04-02", "week": "Mar 30-05", "source": "Play Store", "rating": 1, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-04-02", "week": "Mar 30-05", "source": "Play Store", "rating": 1, "title": "Stuck on splash", "text": "App hangs on the loading screen and I have to force close and retry.", "theme": "App Performance & Reliability"}, {"date": "2026-04-02", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-04-02", "week": "Mar 30-05", "source": "App Store", "rating": 2, "title": "KYC stuck in review", "text": "My KYC has been under verification for days with no update. Cannot start investing.", "theme": "Onboarding & KYC"}, {"date": "2026-04-03", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Fast payout this time", "text": "My last withdrawal hit the bank the same day. Big improvement over earlier.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-03", "week": "Mar 30-05", "source": "App Store", "rating": 1, "title": "Slow and laggy", "text": "There is a delay between tapping buy and the order screen loading. Risky during volatility.", "theme": "App Performance & Reliability"}, {"date": "2026-04-03", "week": "Mar 30-05", "source": "Play Store", "rating": 2, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-04-04", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-04-04", "week": "Mar 30-05", "source": "App Store", "rating": 5, "title": "Fast verification", "text": "KYC was approved within a few minutes using PAN and Aadhaar.", "theme": "Onboarding & KYC"}, {"date": "2026-04-05", "week": "Mar 30-05", "source": "App Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-06", "week": "Apr 06-12", "source": "App Store", "rating": 2, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-06", "week": "Apr 06-12", "source": "Play Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-06", "week": "Apr 06-12", "source": "Play Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-04-07", "week": "Apr 06-12", "source": "App Store", "rating": 1, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-04-07", "week": "Apr 06-12", "source": "Play Store", "rating": 5, "title": "Fast and snappy", "text": "Orders place instantly and the charts load without lag for me now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-07", "week": "Apr 06-12", "source": "Play Store", "rating": 1, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-04-08", "week": "Apr 06-12", "source": "App Store", "rating": 1, "title": "KYC stuck in review", "text": "My KYC has been under verification for days with no update. Cannot start investing.", "theme": "Onboarding & KYC"}, {"date": "2026-04-08", "week": "Apr 06-12", "source": "Play Store", "rating": 5, "title": "Easy signup", "text": "Setting up the demat account was simple and fully online. No branch visit.", "theme": "Onboarding & KYC"}, {"date": "2026-04-09", "week": "Apr 06-12", "source": "App Store", "rating": 1, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-09", "week": "Apr 06-12", "source": "Play Store", "rating": 1, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-04-09", "week": "Apr 06-12", "source": "App Store", "rating": 2, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-04-09", "week": "Apr 06-12", "source": "App Store", "rating": 4, "title": "Cheap mutual fund investing", "text": "Direct mutual funds with no commission saves me a lot over the year.", "theme": "Charges & Fees"}, {"date": "2026-04-10", "week": "Apr 06-12", "source": "App Store", "rating": 1, "title": "Hidden charges", "text": "Found a charge on my statement that was never shown at the time of the transaction.", "theme": "Charges & Fees"}, {"date": "2026-04-10", "week": "Apr 06-12", "source": "App Store", "rating": 4, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-04-11", "week": "Apr 06-12", "source": "App Store", "rating": 5, "title": "Quick settlement", "text": "US stock sale settled on time and the funds reached my account as shown.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-11", "week": "Apr 06-12", "source": "App Store", "rating": 1, "title": "Stuck on splash", "text": "App hangs on the loading screen and I have to force close and retry.", "theme": "App Performance & Reliability"}, {"date": "2026-04-11", "week": "Apr 06-12", "source": "Play Store", "rating": 1, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-04-12", "week": "Apr 06-12", "source": "App Store", "rating": 2, "title": "Slow and laggy", "text": "There is a delay between tapping buy and the order screen loading. Risky during volatility.", "theme": "App Performance & Reliability"}, {"date": "2026-04-13", "week": "Apr 13-19", "source": "App Store", "rating": 1, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-14", "week": "Apr 13-19", "source": "App Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-15", "week": "Apr 13-19", "source": "Play Store", "rating": 1, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-15", "week": "Apr 13-19", "source": "Play Store", "rating": 2, "title": "Stuck on splash", "text": "App hangs on the loading screen and I have to force close and retry.", "theme": "App Performance & Reliability"}, {"date": "2026-04-15", "week": "Apr 13-19", "source": "App Store", "rating": 4, "title": "Cheap mutual fund investing", "text": "Direct mutual funds with no commission saves me a lot over the year.", "theme": "Charges & Fees"}, {"date": "2026-04-15", "week": "Apr 13-19", "source": "Play Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-04-16", "week": "Apr 13-19", "source": "App Store", "rating": 1, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-04-16", "week": "Apr 13-19", "source": "Play Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-04-16", "week": "Apr 13-19", "source": "App Store", "rating": 2, "title": "Document upload fails", "text": "The PAN upload step keeps erroring out and restarts the whole flow.", "theme": "Onboarding & KYC"}, {"date": "2026-04-16", "week": "Apr 13-19", "source": "App Store", "rating": 5, "title": "Easy signup", "text": "Setting up the demat account was simple and fully online. No branch visit.", "theme": "Onboarding & KYC"}, {"date": "2026-04-17", "week": "Apr 13-19", "source": "App Store", "rating": 2, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-04-17", "week": "Apr 13-19", "source": "App Store", "rating": 4, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-17", "week": "Apr 13-19", "source": "Play Store", "rating": 2, "title": "Fees keep changing", "text": "The charges structure seems to change often and I am never told in advance.", "theme": "Charges & Fees"}, {"date": "2026-04-18", "week": "Apr 13-19", "source": "App Store", "rating": 2, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-04-19", "week": "Apr 13-19", "source": "App Store", "rating": 1, "title": "Slow and laggy", "text": "There is a delay between tapping buy and the order screen loading. Risky during volatility.", "theme": "App Performance & Reliability"}, {"date": "2026-04-19", "week": "Apr 13-19", "source": "Play Store", "rating": 1, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Stuck on splash", "text": "App hangs on the loading screen and I have to force close and retry.", "theme": "App Performance & Reliability"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Crashes on portfolio", "text": "The app crashes when I open the portfolio tab after the latest update.", "theme": "App Performance & Reliability"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 5, "title": "Fast and snappy", "text": "Orders place instantly and the charts load without lag for me now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "Play Store", "rating": 2, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-04-20", "week": "Apr 20-26", "source": "App Store", "rating": 2, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-04-21", "week": "Apr 20-26", "source": "Play Store", "rating": 1, "title": "Account opening loop", "text": "Onboarding sent me back to the same screen repeatedly. Could not finish.", "theme": "Onboarding & KYC"}, {"date": "2026-04-21", "week": "Apr 20-26", "source": "Play Store", "rating": 5, "title": "KYC done in minutes", "text": "Paperless account opening was quick and I was investing the same day.", "theme": "Onboarding & KYC"}, {"date": "2026-04-24", "week": "Apr 20-26", "source": "Play Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-24", "week": "Apr 20-26", "source": "Play Store", "rating": 2, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-04-24", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "App keeps syncing", "text": "Every time I open the app it gets stuck on syncing and I cannot place an order.", "theme": "App Performance & Reliability"}, {"date": "2026-04-24", "week": "Apr 20-26", "source": "App Store", "rating": 4, "title": "Fast and snappy", "text": "Orders place instantly and the charts load without lag for me now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-24", "week": "Apr 20-26", "source": "App Store", "rating": 4, "title": "Low cost for US stocks", "text": "Fractional US investing from a small amount with low fees is very useful.", "theme": "Charges & Fees"}, {"date": "2026-04-25", "week": "Apr 20-26", "source": "App Store", "rating": 5, "title": "Quick settlement", "text": "US stock sale settled on time and the funds reached my account as shown.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-25", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-04-25", "week": "Apr 20-26", "source": "Play Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-04-25", "week": "Apr 20-26", "source": "App Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-04-25", "week": "Apr 20-26", "source": "App Store", "rating": 4, "title": "Fast verification", "text": "KYC was approved within a few minutes using PAN and Aadhaar.", "theme": "Onboarding & KYC"}, {"date": "2026-04-26", "week": "Apr 20-26", "source": "App Store", "rating": 1, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-04-26", "week": "Apr 20-26", "source": "Play Store", "rating": 2, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-04-27", "week": "Apr 27-03", "source": "Play Store", "rating": 5, "title": "Fast payout this time", "text": "My last withdrawal hit the bank the same day. Big improvement over earlier.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-27", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Fees keep changing", "text": "The charges structure seems to change often and I am never told in advance.", "theme": "Charges & Fees"}, {"date": "2026-04-27", "week": "Apr 27-03", "source": "Play Store", "rating": 4, "title": "Zero AMC is great", "text": "Free demat with no annual maintenance charge is the main reason I stay.", "theme": "Charges & Fees"}, {"date": "2026-04-27", "week": "Apr 27-03", "source": "Play Store", "rating": 4, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-04-28", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-04-29", "week": "Apr 27-03", "source": "App Store", "rating": 1, "title": "KYC stuck in review", "text": "My KYC has been under verification for days with no update. Cannot start investing.", "theme": "Onboarding & KYC"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "Play Store", "rating": 2, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "Play Store", "rating": 5, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "App Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "App Store", "rating": 1, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "App Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-04-30", "week": "Apr 27-03", "source": "App Store", "rating": 2, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-05-01", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-01", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Slow and laggy", "text": "There is a delay between tapping buy and the order screen loading. Risky during volatility.", "theme": "App Performance & Reliability"}, {"date": "2026-05-01", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-05-02", "week": "Apr 27-03", "source": "Play Store", "rating": 2, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-05-02", "week": "Apr 27-03", "source": "App Store", "rating": 1, "title": "Hidden charges", "text": "Found a charge on my statement that was never shown at the time of the transaction.", "theme": "Charges & Fees"}, {"date": "2026-05-02", "week": "Apr 27-03", "source": "Play Store", "rating": 5, "title": "Agent actually helped", "text": "The support agent followed up and got my issue sorted within a day.", "theme": "Customer Support"}, {"date": "2026-05-03", "week": "Apr 27-03", "source": "App Store", "rating": 2, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-03", "week": "Apr 27-03", "source": "Play Store", "rating": 1, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-05-03", "week": "Apr 27-03", "source": "Play Store", "rating": 2, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-05-04", "week": "May 04-10", "source": "Play Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-04", "week": "May 04-10", "source": "Play Store", "rating": 4, "title": "Cheap mutual fund investing", "text": "Direct mutual funds with no commission saves me a lot over the year.", "theme": "Charges & Fees"}, {"date": "2026-05-04", "week": "May 04-10", "source": "Play Store", "rating": 5, "title": "Fast verification", "text": "KYC was approved within a few minutes using PAN and Aadhaar.", "theme": "Onboarding & KYC"}, {"date": "2026-05-05", "week": "May 04-10", "source": "Play Store", "rating": 5, "title": "Smooth redemption", "text": "Redeemed a mutual fund and got the money within the expected window. No issues.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-05", "week": "May 04-10", "source": "Play Store", "rating": 4, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-05-05", "week": "May 04-10", "source": "App Store", "rating": 1, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-05-05", "week": "May 04-10", "source": "App Store", "rating": 5, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-05-06", "week": "May 04-10", "source": "App Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-05-06", "week": "May 04-10", "source": "Play Store", "rating": 1, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-05-07", "week": "May 04-10", "source": "App Store", "rating": 3, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-05-07", "week": "May 04-10", "source": "Play Store", "rating": 5, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-05-07", "week": "May 04-10", "source": "App Store", "rating": 1, "title": "FX markup too high", "text": "The currency conversion charge on US funding eats into returns. Wish it was shown upfront.", "theme": "Charges & Fees"}, {"date": "2026-05-07", "week": "May 04-10", "source": "App Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-05-09", "week": "May 04-10", "source": "Play Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-09", "week": "May 04-10", "source": "Play Store", "rating": 1, "title": "Login OTP issues", "text": "The OTP does not arrive half the time and I get locked out during market hours.", "theme": "App Performance & Reliability"}, {"date": "2026-05-09", "week": "May 04-10", "source": "Play Store", "rating": 1, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-05-09", "week": "May 04-10", "source": "Play Store", "rating": 5, "title": "Good follow-up", "text": "Got a callback and the person understood the problem and fixed it.", "theme": "Customer Support"}, {"date": "2026-05-10", "week": "May 04-10", "source": "App Store", "rating": 2, "title": "Crashes on portfolio", "text": "The app crashes when I open the portfolio tab after the latest update.", "theme": "App Performance & Reliability"}, {"date": "2026-05-10", "week": "May 04-10", "source": "App Store", "rating": 2, "title": "Hidden charges", "text": "Found a charge on my statement that was never shown at the time of the transaction.", "theme": "Charges & Fees"}, {"date": "2026-05-10", "week": "May 04-10", "source": "Play Store", "rating": 2, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-05-10", "week": "May 04-10", "source": "Play Store", "rating": 2, "title": "Document upload fails", "text": "The PAN upload step keeps erroring out and restarts the whole flow.", "theme": "Onboarding & KYC"}, {"date": "2026-05-11", "week": "May 11-17", "source": "App Store", "rating": 2, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-11", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "Crashes on portfolio", "text": "The app crashes when I open the portfolio tab after the latest update.", "theme": "App Performance & Reliability"}, {"date": "2026-05-11", "week": "May 11-17", "source": "App Store", "rating": 2, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-05-12", "week": "May 11-17", "source": "App Store", "rating": 2, "title": "Hidden charges", "text": "Found a charge on my statement that was never shown at the time of the transaction.", "theme": "Charges & Fees"}, {"date": "2026-05-12", "week": "May 11-17", "source": "Play Store", "rating": 2, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-05-12", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "Generic replies only", "text": "Raised a ticket and got copy-paste responses. Nobody actually solved the problem.", "theme": "Customer Support"}, {"date": "2026-05-12", "week": "May 11-17", "source": "Play Store", "rating": 5, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-05-13", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "Slow and laggy", "text": "There is a delay between tapping buy and the order screen loading. Risky during volatility.", "theme": "App Performance & Reliability"}, {"date": "2026-05-13", "week": "May 11-17", "source": "Play Store", "rating": 5, "title": "Stable now", "text": "No crashes since the recent update and syncing is much quicker.", "theme": "App Performance & Reliability"}, {"date": "2026-05-13", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-05-13", "week": "May 11-17", "source": "Play Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-05-14", "week": "May 11-17", "source": "Play Store", "rating": 4, "title": "Fast and snappy", "text": "Orders place instantly and the charts load without lag for me now.", "theme": "App Performance & Reliability"}, {"date": "2026-05-15", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-15", "week": "May 11-17", "source": "App Store", "rating": 1, "title": "KYC stuck in review", "text": "My KYC has been under verification for days with no update. Cannot start investing.", "theme": "Onboarding & KYC"}, {"date": "2026-05-16", "week": "May 11-17", "source": "App Store", "rating": 5, "title": "Smooth redemption", "text": "Redeemed a mutual fund and got the money within the expected window. No issues.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-17", "week": "May 11-17", "source": "Play Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-17", "week": "May 11-17", "source": "App Store", "rating": 1, "title": "Hidden charges", "text": "Found a charge on my statement that was never shown at the time of the transaction.", "theme": "Charges & Fees"}, {"date": "2026-05-17", "week": "May 11-17", "source": "Play Store", "rating": 5, "title": "Fair pricing overall", "text": "Brokerage is reasonable and the free fund switching is a nice touch.", "theme": "Charges & Fees"}, {"date": "2026-05-17", "week": "May 11-17", "source": "Play Store", "rating": 5, "title": "Fast verification", "text": "KYC was approved within a few minutes using PAN and Aadhaar.", "theme": "Onboarding & KYC"}, {"date": "2026-05-18", "week": "May 18-24", "source": "App Store", "rating": 2, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-18", "week": "May 18-24", "source": "App Store", "rating": 2, "title": "App keeps syncing", "text": "Every time I open the app it gets stuck on syncing and I cannot place an order.", "theme": "App Performance & Reliability"}, {"date": "2026-05-18", "week": "May 18-24", "source": "Play Store", "rating": 1, "title": "App keeps syncing", "text": "Every time I open the app it gets stuck on syncing and I cannot place an order.", "theme": "App Performance & Reliability"}, {"date": "2026-05-18", "week": "May 18-24", "source": "App Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-05-18", "week": "May 18-24", "source": "Play Store", "rating": 5, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-05-19", "week": "May 18-24", "source": "App Store", "rating": 1, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-05-19", "week": "May 18-24", "source": "Play Store", "rating": 1, "title": "Document upload fails", "text": "The PAN upload step keeps erroring out and restarts the whole flow.", "theme": "Onboarding & KYC"}, {"date": "2026-05-20", "week": "May 18-24", "source": "App Store", "rating": 2, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-20", "week": "May 18-24", "source": "App Store", "rating": 4, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-05-20", "week": "May 18-24", "source": "App Store", "rating": 2, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-05-21", "week": "May 18-24", "source": "App Store", "rating": 5, "title": "Great tracking", "text": "Net worth tracking across accounts is genuinely useful and well designed.", "theme": "App Performance & Reliability"}, {"date": "2026-05-21", "week": "May 18-24", "source": "App Store", "rating": 2, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-05-22", "week": "May 18-24", "source": "App Store", "rating": 1, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-05-22", "week": "May 18-24", "source": "App Store", "rating": 5, "title": "Good follow-up", "text": "Got a callback and the person understood the problem and fixed it.", "theme": "Customer Support"}, {"date": "2026-05-23", "week": "May 18-24", "source": "Play Store", "rating": 1, "title": "Redemption pending too long", "text": "Redeemed units four days back and the status is still processing. It used to be much faster.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-23", "week": "May 18-24", "source": "Play Store", "rating": 1, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-23", "week": "May 18-24", "source": "App Store", "rating": 5, "title": "Fast payout this time", "text": "My last withdrawal hit the bank the same day. Big improvement over earlier.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-23", "week": "May 18-24", "source": "App Store", "rating": 4, "title": "Zero AMC is great", "text": "Free demat with no annual maintenance charge is the main reason I stay.", "theme": "Charges & Fees"}, {"date": "2026-05-24", "week": "May 18-24", "source": "Play Store", "rating": 1, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-05-25", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-26", "week": "May 25-31", "source": "Play Store", "rating": 2, "title": "Redemption pending too long", "text": "Redeemed units four days back and the status is still processing. It used to be much faster.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-26", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-26", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-26", "week": "May 25-31", "source": "Play Store", "rating": 5, "title": "Quick settlement", "text": "US stock sale settled on time and the funds reached my account as shown.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-27", "week": "May 25-31", "source": "App Store", "rating": 4, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-05-27", "week": "May 25-31", "source": "App Store", "rating": 2, "title": "Fees keep changing", "text": "The charges structure seems to change often and I am never told in advance.", "theme": "Charges & Fees"}, {"date": "2026-05-27", "week": "May 25-31", "source": "App Store", "rating": 2, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-05-27", "week": "May 25-31", "source": "App Store", "rating": 5, "title": "Quick chat resolution", "text": "Used in-app chat and the query about my SIP was answered clearly.", "theme": "Customer Support"}, {"date": "2026-05-27", "week": "May 25-31", "source": "App Store", "rating": 4, "title": "KYC done in minutes", "text": "Paperless account opening was quick and I was investing the same day.", "theme": "Onboarding & KYC"}, {"date": "2026-05-28", "week": "May 25-31", "source": "App Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-05-28", "week": "May 25-31", "source": "Play Store", "rating": 5, "title": "Fair pricing overall", "text": "Brokerage is reasonable and the free fund switching is a nice touch.", "theme": "Charges & Fees"}, {"date": "2026-05-28", "week": "May 25-31", "source": "Play Store", "rating": 2, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-05-28", "week": "May 25-31", "source": "App Store", "rating": 4, "title": "KYC done in minutes", "text": "Paperless account opening was quick and I was investing the same day.", "theme": "Onboarding & KYC"}, {"date": "2026-05-29", "week": "May 25-31", "source": "Play Store", "rating": 2, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-05-30", "week": "May 25-31", "source": "Play Store", "rating": 2, "title": "Redemption pending too long", "text": "Redeemed units four days back and the status is still processing. It used to be much faster.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-05-30", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "FX markup too high", "text": "The currency conversion charge on US funding eats into returns. Wish it was shown upfront.", "theme": "Charges & Fees"}, {"date": "2026-05-30", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-05-31", "week": "May 25-31", "source": "App Store", "rating": 1, "title": "Support sent me in circles", "text": "They told me to contact my bank even though the bank confirmed nothing was received.", "theme": "Customer Support"}, {"date": "2026-05-31", "week": "May 25-31", "source": "Play Store", "rating": 1, "title": "Account opening loop", "text": "Onboarding sent me back to the same screen repeatedly. Could not finish.", "theme": "Onboarding & KYC"}, {"date": "2026-06-01", "week": "Jun 01-07", "source": "Play Store", "rating": 5, "title": "Cheap mutual fund investing", "text": "Direct mutual funds with no commission saves me a lot over the year.", "theme": "Charges & Fees"}, {"date": "2026-06-01", "week": "Jun 01-07", "source": "App Store", "rating": 1, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-06-02", "week": "Jun 01-07", "source": "App Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-02", "week": "Jun 01-07", "source": "Play Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-02", "week": "Jun 01-07", "source": "App Store", "rating": 4, "title": "Quick settlement", "text": "US stock sale settled on time and the funds reached my account as shown.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-02", "week": "Jun 01-07", "source": "App Store", "rating": 1, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-06-03", "week": "Jun 01-07", "source": "App Store", "rating": 2, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-06-03", "week": "Jun 01-07", "source": "Play Store", "rating": 2, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-06-03", "week": "Jun 01-07", "source": "Play Store", "rating": 1, "title": "Account opening loop", "text": "Onboarding sent me back to the same screen repeatedly. Could not finish.", "theme": "Onboarding & KYC"}, {"date": "2026-06-03", "week": "Jun 01-07", "source": "Play Store", "rating": 4, "title": "KYC done in minutes", "text": "Paperless account opening was quick and I was investing the same day.", "theme": "Onboarding & KYC"}, {"date": "2026-06-04", "week": "Jun 01-07", "source": "Play Store", "rating": 2, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-04", "week": "Jun 01-07", "source": "Play Store", "rating": 1, "title": "Payout date keeps changing", "text": "Promised credit date moved three times. Hard to plan when the money is just stuck.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-04", "week": "Jun 01-07", "source": "App Store", "rating": 5, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-06-05", "week": "Jun 01-07", "source": "App Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-05", "week": "Jun 01-07", "source": "App Store", "rating": 5, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-06-05", "week": "Jun 01-07", "source": "App Store", "rating": 4, "title": "Agent actually helped", "text": "The support agent followed up and got my issue sorted within a day.", "theme": "Customer Support"}, {"date": "2026-06-06", "week": "Jun 01-07", "source": "Play Store", "rating": 1, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-06", "week": "Jun 01-07", "source": "App Store", "rating": 2, "title": "App keeps syncing", "text": "Every time I open the app it gets stuck on syncing and I cannot place an order.", "theme": "App Performance & Reliability"}, {"date": "2026-06-06", "week": "Jun 01-07", "source": "Play Store", "rating": 2, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-06-07", "week": "Jun 01-07", "source": "Play Store", "rating": 2, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-06-07", "week": "Jun 01-07", "source": "App Store", "rating": 1, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "App Store", "rating": 2, "title": "Money stuck on withdrawal", "text": "Requested a US stock withdrawal over a week ago and it still shows pending. The credit date keeps getting pushed.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "Play Store", "rating": 4, "title": "Quick settlement", "text": "US stock sale settled on time and the funds reached my account as shown.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "App Store", "rating": 1, "title": "Generic replies only", "text": "Raised a ticket and got copy-paste responses. Nobody actually solved the problem.", "theme": "Customer Support"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "App Store", "rating": 1, "title": "Generic replies only", "text": "Raised a ticket and got copy-paste responses. Nobody actually solved the problem.", "theme": "Customer Support"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "App Store", "rating": 1, "title": "Document upload fails", "text": "The PAN upload step keeps erroring out and restarts the whole flow.", "theme": "Onboarding & KYC"}, {"date": "2026-06-08", "week": "Jun 08-14", "source": "Play Store", "rating": 4, "title": "Easy signup", "text": "Setting up the demat account was simple and fully online. No branch visit.", "theme": "Onboarding & KYC"}, {"date": "2026-06-09", "week": "Jun 08-14", "source": "App Store", "rating": 2, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-09", "week": "Jun 08-14", "source": "Play Store", "rating": 5, "title": "Good follow-up", "text": "Got a callback and the person understood the problem and fixed it.", "theme": "Customer Support"}, {"date": "2026-06-10", "week": "Jun 08-14", "source": "App Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-06-10", "week": "Jun 08-14", "source": "Play Store", "rating": 2, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "App Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "Play Store", "rating": 1, "title": "Bank says nothing received", "text": "App shows the withdrawal as completed but my bank has not received anything for days.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "App Store", "rating": 1, "title": "Redemption pending too long", "text": "Redeemed units four days back and the status is still processing. It used to be much faster.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "Play Store", "rating": 2, "title": "Charts not loading", "text": "Live charts freeze and prices do not refresh during busy market sessions.", "theme": "App Performance & Reliability"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "Play Store", "rating": 2, "title": "Conversion cost unclear", "text": "Could not figure out the real cost of adding dollars because the markup is buried.", "theme": "Charges & Fees"}, {"date": "2026-06-11", "week": "Jun 08-14", "source": "Play Store", "rating": 1, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-06-12", "week": "Jun 08-14", "source": "Play Store", "rating": 1, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-12", "week": "Jun 08-14", "source": "App Store", "rating": 4, "title": "Clean all-in-one view", "text": "Love seeing Indian stocks, US stocks and mutual funds with net worth in one place.", "theme": "App Performance & Reliability"}, {"date": "2026-06-12", "week": "Jun 08-14", "source": "App Store", "rating": 5, "title": "Zero AMC is great", "text": "Free demat with no annual maintenance charge is the main reason I stay.", "theme": "Charges & Fees"}, {"date": "2026-06-13", "week": "Jun 08-14", "source": "Play Store", "rating": 2, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-13", "week": "Jun 08-14", "source": "App Store", "rating": 2, "title": "Unexpected brokerage", "text": "Charged brokerage I did not expect on a small trade. The fee breakup is hard to find.", "theme": "Charges & Fees"}, {"date": "2026-06-13", "week": "Jun 08-14", "source": "Play Store", "rating": 1, "title": "No real escalation", "text": "There is no way to escalate a stuck transaction to someone who can actually act.", "theme": "Customer Support"}, {"date": "2026-06-13", "week": "Jun 08-14", "source": "Play Store", "rating": 2, "title": "Generic replies only", "text": "Raised a ticket and got copy-paste responses. Nobody actually solved the problem.", "theme": "Customer Support"}, {"date": "2026-06-14", "week": "Jun 08-14", "source": "Play Store", "rating": 4, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-06-15", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Money stuck on withdrawal", "text": "Requested a US stock withdrawal over a week ago and it still shows pending. The credit date keeps getting pushed.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-15", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "Slow response", "text": "Waited three days for a reply on a fund that is stuck. Too slow for money matters.", "theme": "Customer Support"}, {"date": "2026-06-16", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-16", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "Fees keep changing", "text": "The charges structure seems to change often and I am never told in advance.", "theme": "Charges & Fees"}, {"date": "2026-06-16", "week": "Jun 15-21", "source": "Play Store", "rating": 4, "title": "Zero AMC is great", "text": "Free demat with no annual maintenance charge is the main reason I stay.", "theme": "Charges & Fees"}, {"date": "2026-06-16", "week": "Jun 15-21", "source": "App Store", "rating": 4, "title": "Smooth onboarding", "text": "Clean step-by-step signup and I understood each stage clearly.", "theme": "Onboarding & KYC"}, {"date": "2026-06-17", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "Withdrawal delayed again", "text": "Second time my withdrawal took more than ten days to reach my bank. No clear status anywhere in the app.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-17", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-17", "week": "Jun 15-21", "source": "Play Store", "rating": 5, "title": "Smooth after update", "text": "The latest version feels faster and the home screen loads quickly now.", "theme": "App Performance & Reliability"}, {"date": "2026-06-17", "week": "Jun 15-21", "source": "Play Store", "rating": 2, "title": "Ticket closed without fix", "text": "My complaint was marked resolved but the underlying issue is still there.", "theme": "Customer Support"}, {"date": "2026-06-18", "week": "Jun 15-21", "source": "App Store", "rating": 5, "title": "Fast payout this time", "text": "My last withdrawal hit the bank the same day. Big improvement over earlier.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-18", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-06-18", "week": "Jun 15-21", "source": "App Store", "rating": 1, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-06-18", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Generic replies only", "text": "Raised a ticket and got copy-paste responses. Nobody actually solved the problem.", "theme": "Customer Support"}, {"date": "2026-06-18", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "No one picks up", "text": "There is no working helpline. Email replies are slow and do not address the issue.", "theme": "Customer Support"}, {"date": "2026-06-20", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Funds blocked after switch", "text": "Tried switching a mutual fund and the amount is now stuck between the old and new fund. Neither side shows it.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-20", "week": "Jun 15-21", "source": "App Store", "rating": 2, "title": "Where is my money", "text": "Sold US stocks and the amount has not been credited. The timeline shown in the app is not accurate.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-20", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-20", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Crashes on portfolio", "text": "The app crashes when I open the portfolio tab after the latest update.", "theme": "App Performance & Reliability"}, {"date": "2026-06-20", "week": "Jun 15-21", "source": "Play Store", "rating": 4, "title": "Agent actually helped", "text": "The support agent followed up and got my issue sorted within a day.", "theme": "Customer Support"}, {"date": "2026-06-21", "week": "Jun 15-21", "source": "App Store", "rating": 2, "title": "Cannot withdraw from savings", "text": "Instant withdrawal from the savings feature failed and the money has not come back to my wallet.", "theme": "Withdrawals & Fund Holds"}, {"date": "2026-06-21", "week": "Jun 15-21", "source": "Play Store", "rating": 2, "title": "Surprise withdrawal fee", "text": "I joined when there was no withdrawal fee and now I am being charged one. Not communicated clearly.", "theme": "Charges & Fees"}, {"date": "2026-06-21", "week": "Jun 15-21", "source": "Play Store", "rating": 1, "title": "Document upload fails", "text": "The PAN upload step keeps erroring out and restarts the whole flow.", "theme": "Onboarding & KYC"}, {"date": "2026-06-21", "week": "Jun 15-21", "source": "App Store", "rating": 4, "title": "Fast verification", "text": "KYC was approved within a few minutes using PAN and Aadhaar.", "theme": "Onboarding & KYC"}];
+const SELF_ALIAS = "me+indmoney-pulse@myteam.example";
+const ACTIONS = {
+ "Withdrawals & Fund Holds":"Ship a live withdrawal/redemption tracker with honest ETAs and auto-alerts when a payout slips past the promised date.",
+ "Charges & Fees":"Show a full fee break-up on the confirm screen and post any fee change to an in-app changelog before it takes effect.",
+ "Customer Support":"Add a priority escalation path with callback for stuck-money tickets and retire copy-paste macros on fund-hold cases.",
+ "App Performance & Reliability":"Hold the post-update stability gains: keep gating releases on a crash-free threshold and watch OTP-login during market hours.",
+ "Onboarding & KYC":"Make KYC status visible step-by-step with a clear retry on document-upload errors so users aren't stuck in a loop."
+};
+let SRC = "All";
+const sentiment = r => r<=2?"neg":(r>=4?"pos":"neu");
+const negColor = p => p>=60?"var(--neg)":(p>=40?"var(--warn)":"var(--pos)");
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+const wfirst={};
+REVIEWS.forEach(r=>{ if(!(r.week in wfirst)||r.date<wfirst[r.week]) wfirst[r.week]=r.date; });
+const WEEKS=[...new Set(REVIEWS.map(r=>r.week))].sort((a,b)=>wfirst[a].localeCompare(wfirst[b]));
+const THEMES=[...new Set(REVIEWS.map(r=>r.theme))];
+
+const base = ()=> SRC==="All"?REVIEWS:REVIEWS.filter(r=>r.source===SRC);
+const inWeek=(w,t)=> base().filter(r=>r.week===w && (t==null||r.theme===t));
+function stat(items){const n=items.length;return{n,avg:n?items.reduce((s,r)=>s+r.rating,0)/n:0,
+  negPct:n?Math.round(100*items.filter(r=>sentiment(r.rating)==="neg").length/n):0};}
+function counts(w){const c={};inWeek(w).forEach(r=>c[r.theme]=(c[r.theme]||0)+1);return c;}
+
+function priority(theme,w,pc,ppc,maxc){
+  const cnt=pc[theme]||0,p=ppc[theme]||0,negPct=stat(inWeek(w,theme)).negPct;
+  const vol=100*cnt/(maxc||1), mom=cnt-p, momS=Math.max(0,Math.min(100,50+mom*9));
+  return Math.round(0.50*negPct+0.35*vol+0.15*momS);
+}
+
+function render(week){
+  const wi=WEEKS.indexOf(week);
+  const cur=inWeek(week), prevW=wi>0?WEEKS[wi-1]:null;
+  const S=stat(cur), Sp=prevW?stat(inWeek(prevW)):{avg:S.avg};
+  const delta=+(S.avg-Sp.avg).toFixed(2);
+  const pc=counts(week), ppc=prevW?counts(prevW):{};
+  const maxc=Math.max(1,...Object.values(pc));
+  const pri={}; THEMES.forEach(t=>pri[t]=priority(t,week,pc,ppc,maxc));
+  const ranked=[...THEMES].sort((a,b)=>pri[b]-pri[a]);
+  const top3=ranked.slice(0,3);
+  const src=cur.reduce((m,r)=>{m[r.source]=(m[r.source]||0)+1;return m;},{});
+  const arrow=delta>0?["▲","up"]:(delta<0?["▼","down"]:["=","flat"]);
+
+  // KPIs
+  document.getElementById("kpis").innerHTML=[
+    `<div class="kpi"><div class="big mono">${S.n}</div><div class="cap">reviews this week</div></div>`,
+    `<div class="kpi"><div class="big mono">${S.avg.toFixed(2)}<span class="delta ${arrow[1]}">${arrow[0]}${delta>=0?"+":""}${delta.toFixed(2)}</span></div><div class="cap">avg rating · WoW</div></div>`,
+    `<div class="kpi"><div class="big mono">${S.negPct}%</div><div class="cap">negative (1–2★)</div></div>`,
+    `<div class="kpi"><div class="big mono">${pri[ranked[0]]}</div><div class="cap">top priority score</div></div>`,
+    `<div class="kpi"><div class="big mono">${src["App Store"]||0}<span style="font-size:14px;color:var(--mute)"> / ${src["Play Store"]||0}</span></div><div class="cap">App / Play</div></div>`
+  ].join("");
+
+  // headline
+  const lead=ranked[0], leadN=pc[lead]||0, leadNeg=stat(inWeek(week,lead)).negPct, leadWow=(pc[lead]||0)-(ppc[lead]||0);
+  const riser=[...THEMES].sort((a,b)=>((pc[b]||0)-(ppc[b]||0))-((pc[a]||0)-(ppc[a]||0)))[0];
+  const riserWow=(pc[riser]||0)-(ppc[riser]||0);
+  const faller=[...THEMES].sort((a,b)=>((pc[a]||0)-(ppc[a]||0))-((pc[b]||0)-(ppc[b]||0)))[0];
+  const fallerWow=(pc[faller]||0)-(ppc[faller]||0);
+  let hl=`<b>${lead}</b> is this week's top priority — ${leadN} mentions, ${leadNeg}% negative`+(leadWow>0?`, up ${leadWow} WoW.`:".");
+  if(riser!==lead && riserWow>=2) hl+=` <b>${riser}</b> is rising fastest (+${riserWow}).`;
+  if(fallerWow<=-2) hl+=` <b>${faller}</b> is easing (${fallerWow}).`;
+  document.getElementById("headline").innerHTML=hl;
+
+  drawPulse(week);
+
+  // top 3 themes (expandable)
+  document.getElementById("themes").innerHTML=top3.map((t,i)=>{
+    const st=stat(inWeek(week,t)), wow=(pc[t]||0)-(ppc[t]||0), wows=wow>0?`+${wow}`:`${wow}`;
+    const drill=inWeek(week,t).sort((a,b)=>a.rating-b.rating).slice(0,8).map(r=>
+      `<div class="rev"><div class="r1"><span>${r.date} · ${r.source}</span><span class="stars">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</span></div><div class="r2">${esc(r.text)}</div></div>`).join("");
+    return `<div class="theme" data-t="${i}">
+      <div class="head" onclick="this.parentNode.classList.toggle('open')">
+        <div class="rank">${i+1}</div>
+        <div class="name">${t}</div>
+        <div class="prio">priority ${pri[t]}/100</div>
+        <span class="caret">▶</span>
+      </div>
+      <div class="meta"><span>${st.n} mentions</span><span style="color:${wow>0?'var(--neg)':(wow<0?'var(--pos)':'var(--mute)')}">${wows} WoW</span><span>avg ${st.avg.toFixed(2)}★</span><span>${st.negPct}% negative</span></div>
+      <div class="spark">${sparkline(t)}</div>
+      <div class="bar"><span style="width:${st.negPct}%;background:${negColor(st.negPct)}"></span></div>
+      <div class="drill">${drill||'<div class="rev">No reviews in this slice.</div>'}</div>
+    </div>`;
+  }).join("");
+
+  // priority board (all)
+  document.getElementById("board").innerHTML=ranked.map(t=>
+    `<div class="row"><div class="nm">${t}</div><div class="track"><span style="width:${pri[t]}%"></span></div><div class="val mono">${pri[t]}</div></div>`
+  ).join("");
+
+  // movers
+  const movers=[...THEMES].map(t=>({t,d:(pc[t]||0)-(ppc[t]||0)})).sort((a,b)=>b.d-a.d);
+  document.getElementById("movers").innerHTML=movers.map(m=>{
+    const cls=m.d>0?"r":(m.d<0?"f":"z"), sign=m.d>0?`▲ +${m.d}`:(m.d<0?`▼ ${m.d}`:"– 0");
+    return `<div class="mover"><span>${m.t}</span><span class="chip ${cls}">${sign}</span></div>`;
+  }).join("");
+
+  // quotes
+  const quotes=top3.map(t=>{
+    const c=inWeek(week,t).sort((a,b)=>a.rating-b.rating||a.text.length-b.text.length)[0];
+    let tx=c.text; if(tx.length>140)tx=tx.slice(0,137).replace(/\s\S*$/,"")+"…";
+    return {t,tx,rating:c.rating,source:c.source};
+  });
+  document.getElementById("quotes").innerHTML=quotes.map(q=>
+    `<div class="quote"><p>“${esc(q.tx)}”</p><div class="by">${q.rating}★ · ${q.source} · ${q.t}</div></div>`).join("");
+
+  // actions
+  document.getElementById("actions").innerHTML=top3.map(t=>`<li>${ACTIONS[t]}</li>`).join("");
+
+  // email
+  const subj=`INDmoney Weekly Review Pulse — ${week} (avg ${S.avg.toFixed(2)}${arrow[0]}, ${S.negPct}% neg)`;
+  const body=
+`Hi team,
+
+This week's INDmoney review pulse (${week}, 2026)${SRC!=="All"?` — ${SRC} only`:""}, from public App Store + Play Store reviews.
+${S.n} reviews, avg ${S.avg.toFixed(2)} (${delta>=0?"+":""}${delta.toFixed(2)} WoW), ${S.negPct}% negative.
+
+HEADLINE
+${document.getElementById("headline").textContent}
+
+TOP 3 THEMES (by priority = negativity x volume x momentum)
+1. ${top3[0]} — priority ${pri[top3[0]]}/100, ${pc[top3[0]]} mentions, ${stat(inWeek(week,top3[0])).negPct}% neg
+2. ${top3[1]} — priority ${pri[top3[1]]}/100, ${pc[top3[1]]} mentions, ${stat(inWeek(week,top3[1])).negPct}% neg
+3. ${top3[2]} — priority ${pri[top3[2]]}/100, ${pc[top3[2]]} mentions, ${stat(inWeek(week,top3[2])).negPct}% neg
+
+WHAT USERS SAID
+- "${quotes[0].tx}" (${quotes[0].rating}*, ${quotes[0].source})
+- "${quotes[1].tx}" (${quotes[1].rating}*, ${quotes[1].source})
+- "${quotes[2].tx}" (${quotes[2].rating}*, ${quotes[2].source})
+
+THREE ACTION IDEAS
+1. ${ACTIONS[top3[0]]}
+2. ${ACTIONS[top3[1]]}
+3. ${ACTIONS[top3[2]]}
+
+One-pager (PDF) and source CSV attached. No PII included.
+
+— Auto-generated by Review Pulse`;
+  document.getElementById("mailbox").innerHTML=`<div class="subj">Subject: ${esc(subj)}</div>${esc(body)}`;
+  const toEl=document.getElementById("toInput");
+  if(!toEl.value) toEl.value=SELF_ALIAS;
+  const recipient=()=>(toEl.value.trim()||SELF_ALIAS);
+  const full=()=>"Subject: "+subj+"\n\n"+body;
+  const gmailURL=()=>`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient())}&su=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  const gb=document.getElementById("gmailBtn");
+  const syncGmail=()=>{ gb.href=gmailURL(); };
+  syncGmail(); toEl.oninput=syncGmail;          // keep Gmail link in sync with the "Send to" field
+
+  document.getElementById("copyBtn").onclick=async()=>{
+    const ok=await copyText(full());
+    showToast(ok?"Email copied to clipboard":"Couldn't copy here — select the text above and copy manually");
+  };
+  gb.onclick=async(e)=>{                          // native anchor opens Gmail; if popups blocked, copy the link
+    syncGmail();
+    if(!openUrl(gmailURL())){ e.preventDefault(); const ok=await copyText(gmailURL());
+      showToast(ok?"Popup blocked here — Gmail link copied. Paste it in a new browser tab."
+                  :"Popup blocked — long-press the button to open Gmail."); }
+  };
+}
+
+function sparkline(theme){
+  const c=WEEKS.map(w=>inWeek(w,theme).length); const mx=Math.max(1,...c);
+  const W=180,H=26,n=c.length;
+  const x=i=>i*(W/(n-1)), yv=v=>H-2-(v/mx)*(H-4);
+  const line=c.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${yv(v).toFixed(1)}`).join(" ");
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path d="${line}" fill="none" stroke="var(--violet)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${x(n-1)}" cy="${yv(c[n-1])}" r="2.4" fill="var(--violet)"/></svg>`;
+}
+
+function drawPulse(active){
+  const svg=document.getElementById("pulse"),W=640,H=150,padX=22,padTop=10,padBot=28;
+  const av=WEEKS.map(w=>stat(inWeek(w)).avg), ng=WEEKS.map(w=>stat(inWeek(w)).negPct), n=WEEKS.length;
+  let lo=Math.max(1,Math.min(...av)-0.2), hi=Math.min(5,Math.max(...av)+0.2); if(hi-lo<0.4)hi=lo+0.4;
+  const x=i=>padX+i*((W-2*padX)/(n-1));
+  const yA=v=>padTop+(hi-v)/(hi-lo)*(H-padTop-padBot);
+  const yN=v=>padTop+(100-v)/100*(H-padTop-padBot);
+  const line=av.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${yA(v).toFixed(1)}`).join(" ");
+  const area=`M${x(0)},${H-padBot} `+ng.map((v,i)=>`L${x(i).toFixed(1)},${yN(v).toFixed(1)}`).join(" ")+` L${x(n-1)},${H-padBot} Z`;
+  const ai=WEEKS.indexOf(active);
+  let grid=""; for(let k=0;k<=2;k++){const gv=lo+(hi-lo)*k/2;const gy=yA(gv);
+    grid+=`<line class="grid-line" x1="${padX}" y1="${gy}" x2="${W-padX}" y2="${gy}"/><text class="axis" x="${padX-4}" y="${gy+3}" text-anchor="end">${gv.toFixed(1)}</text>`;}
+  svg.innerHTML=`${grid}<path d="${area}" fill="var(--neg)" opacity="0.10"/><path class="pulse-path" d="${line}"/>`+
+    av.map((v,i)=>`<circle class="pulse-dot" cx="${x(i)}" cy="${yA(v)}" r="${i===ai?5:2.4}" opacity="${i===ai?1:.5}"/>`).join("")+
+    WEEKS.map((w,i)=> (i%2===0||i===ai)?`<text class="axis" x="${x(i)}" y="${H-10}" text-anchor="middle">${w.split('-')[0]}</text>`:"").join("");
+  const p=svg.querySelector(".pulse-path"),L=p.getTotalLength();
+  p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.getBoundingClientRect();
+  p.style.transition="stroke-dashoffset 950ms ease";p.style.strokeDashoffset=0;
+}
+function showToast(msg){const t=document.getElementById("toast");if(msg)t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600);}
+// Robust clipboard: async API first, then execCommand fallback (works in more sandboxes)
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }catch(_){}
+  try{
+    const ta=document.createElement("textarea"); ta.value=text;
+    ta.style.position="fixed"; ta.style.top="-1000px"; ta.setAttribute("readonly","");
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    const ok=document.execCommand("copy"); ta.remove(); return ok;
+  }catch(_){ return false; }
+}
+// Try to open a URL in a new tab; returns false if the browser/sandbox blocked it
+function openUrl(url){
+  let w=null; try{ w=window.open(url,"_blank","noopener"); }catch(_){}
+  if(w) return true;
+  try{
+    const a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener noreferrer";
+    document.body.appendChild(a); a.click(); a.remove(); return true;
+  }catch(_){ return false; }
+}
+
+const root=document.documentElement;
+document.getElementById("themeBtn").onclick=()=>{root.setAttribute("data-theme",root.getAttribute("data-theme")==="dark"?"light":"dark");render(sel.value);};
+document.getElementById("srcSeg").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  [...e.currentTarget.children].forEach(x=>x.classList.remove("on"));b.classList.add("on");SRC=b.dataset.s;render(sel.value);};
+const sel=document.getElementById("weekSel");
+WEEKS.forEach(w=>{const o=document.createElement("option");o.value=w;o.textContent=w+", 2026";sel.appendChild(o);});
+sel.value=WEEKS[WEEKS.length-1];
+sel.onchange=()=>render(sel.value);
+render(WEEKS[WEEKS.length-1]);
+</script>
+</body>
+</html>
