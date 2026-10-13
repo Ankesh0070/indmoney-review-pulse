@@ -1,0 +1,125 @@
+================================================================================
+PROJECT TITLE: INDmoney Mutual Fund FAQ Assistant (Facts-Only RAG Chatbot)
+PROJECT CODE: PROJECT-INDMONEY-MF-FAQ
+FILE NAME: ProblemStatement.txt
+DOCUMENT VERSION: 1.0.0
+TARGET ARCHITECTURE: Deterministic Retrieval Chatbot (Client-Side, 3-Layer JS)
+LIP MILESTONE: "Mutual Fund FAQs (Facts-Only Q&A)" — Chosen product: INDmoney
+================================================================================
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & MISSION STATEMENT
+--------------------------------------------------------------------------------
+Mutual fund investors routinely ask the same handful of factual questions —
+exit load, lock-in, minimum SIP, benchmark, riskometer, how to download a
+capital-gains statement — and today those answers are scattered across AMC
+scheme pages, registrar portals (CAMS / KFintech), and regulator sites
+(AMFI / SEBI). A chatbot that tries to answer them with a general-purpose LLM
+risks three failures: it may fabricate a number that was never verified
+against an official source, it may slide into investment advice ("you should
+buy X"), or it may be tempted to accept personal data (PAN, account number)
+that a facts-only assistant has no business touching.
+
+This project builds a small, citation-first FAQ assistant for INDmoney's
+users, scoped to four HDFC Mutual Fund schemes, that answers only verified
+facts, cites exactly one official source per fact, and refuses — politely,
+with an educational redirect — anything that drifts into advice, performance
+prediction, or personal data.
+
+--------------------------------------------------------------------------------
+2. DETAILED PROBLEM STATEMENT & SCOPE
+--------------------------------------------------------------------------------
+General-purpose chat models, when asked "what's the exit load on HDFC Flexi
+Cap?", will answer fluently but with no guarantee the number is current or
+even correct — expense ratios in particular change monthly and differ
+between Direct and Regular plans; informal sources disagreed by as much as
+0.58%-1.46% for the same fund during research for this project. The core
+problem is not generating a plausible-sounding answer — it's generating a
+CORRECT, VERIFIABLE one, every time, with no exceptions for PII or opinion
+questions.
+
+The objective is to design a small retrieval pipeline that:
+- Guarantees every factual answer is traceable to one pre-verified official
+  URL (AMC scheme page, CAMS/KFintech statement service, AMFI or SEBI).
+- Eliminates hallucination by using deterministic keyword/intent matching
+  over a hand-verified corpus instead of free-form generation for facts.
+- Refuses advice, suitability ("is it good"), and comparison/ranking
+  questions, redirecting to SEBI/AMFI investor education instead.
+- Refuses performance/return questions, redirecting to the official
+  factsheet instead of computing or guessing a number.
+- Detects and refuses personal data (PAN, Aadhaar, phone, email, account/
+  folio numbers, OTP) before any other processing happens.
+
+--------------------------------------------------------------------------------
+3. END-TO-END SYSTEM FLOW
+--------------------------------------------------------------------------------
+
+[User types a question in the chat composer]
+         │
+         ▼
+[1. PII Guard] ──► If PAN/Aadhaar/email/phone/account/OTP detected: refuse, stop.
+         │ (clean)
+         ▼
+[2. Scheme + Fact Detection] ──► Regex-based intent matching against corpus keys
+         │
+         ▼
+[3. Comparison Guard] ──► 2+ schemes named + "vs/compare/better": refuse, stop.
+         │ (not a comparison)
+         ▼
+[4. Advice Guard] ──► "should I / is it good / best fund / recommend": refuse, stop.
+         │ (not advice)
+         ▼
+[5. Performance Guard] ──► "returns / CAGR / how much will I earn": refuse, stop.
+         │ (not a performance question)
+         ▼
+[6. Statement Guide] ──► "capital gains / CAS / download statement": return CAMS/
+         │                KFintech link (not generated here — identity-checked
+         │                flows stay on the official portal).
+         │ (not a statement request)
+         ▼
+[7. Fact Lookup] ──► scheme × fact → corpus answer (≤3 sentences, 1 citation)
+         │
+         ▼
+[Rendered chat bubble + source chip + "Last updated from sources" stamp]
+
+--------------------------------------------------------------------------------
+4. SCOPE OF THE CORPUS
+--------------------------------------------------------------------------------
+- Product / theme: INDmoney. AMC for the corpus: HDFC Mutual Fund.
+- Schemes (4): HDFC Large Cap Fund, HDFC Flexi Cap Fund, HDFC Mid Cap Fund,
+  HDFC ELSS Tax Saver.
+- Fact types (8): expense ratio (TER), exit load, entry load, minimum SIP,
+  lock-in, riskometer, benchmark, category — plus two statement guides
+  (capital gains statement, consolidated account statement).
+- Sources (22, see data/sources.csv): AMC scheme pages (hdfcfund.com), CAMS
+  and KFintech (SEBI-registered registrars), MF Central, AMFI, SEBI.
+
+--------------------------------------------------------------------------------
+5. WHY DETERMINISTIC MATCHING INSTEAD OF EMBEDDINGS / LLM GENERATION
+--------------------------------------------------------------------------------
+For a corpus this small (4 schemes x 8 fact types = 32 answer slots), keyword
+and intent regex matching over a hand-verified JSON corpus gives 100%
+deterministic, auditable retrieval — the citation can never be wrong because
+every answer is pre-bound to its source URL at authoring time. An
+embeddings/LLM-generation pipeline would add latency, API cost, and a
+non-zero hallucination risk for a problem that does not need semantic
+generalization at this scale. This is documented as a known limitation, not
+a hidden one — see Docs/EdgeCases.md and the "Known limits" section of the
+README.
+
+--------------------------------------------------------------------------------
+6. EXPECTED OUTPUT FORMAT
+--------------------------------------------------------------------------------
+Every engine response is a small JS object:
+
+{
+  "a": "<answer text, <=3 sentences, plain active voice>",
+  "src": "<one official URL>",
+  "srcLabel": "<human-readable source name>",
+  "refuse": true   // present only on advice / performance / PII / comparison refusals
+}
+
+A multi-fact question (e.g. "exit load and lock-in of HDFC ELSS") returns an
+additional "multi" array, one entry per fact, each with its own citation,
+rendered as separate paragraphs in a single chat bubble with de-duplicated
+source chips.

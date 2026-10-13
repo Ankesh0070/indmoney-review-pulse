@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Review Pulse (INDmoney LIP challenge submission)
+Copyright (c) 2026
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ---
-Disclaimer: This project is an educational prototype built for a learning
-challenge. The bundled reviews are a synthetic, redacted sample modeled on
-public review patterns and contain no personal data. The project is not
-affiliated with, endorsed by, or sponsored by INDmoney, Apple, or Google.
+Disclaimer: This project is an educational prototype. It is not investment
+advice and is not affiliated with INDmoney, HDFC Mutual Fund, CAMS, AMFI or
+SEBI. All scheme facts must be verified against the official source linked
+in each answer.

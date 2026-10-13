@@ -1,0 +1,23 @@
+id,scheme_or_topic,source_type,publisher,fact_covered,url,verified_in_build
+1,HDFC Large Cap Fund (Direct),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / min SIP / riskometer / TER,https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct,yes
+2,HDFC Large Cap Fund (Regular),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / TER (regular plan),https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/regular,yes
+3,HDFC Flexi Cap Fund (Direct),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / min SIP / riskometer / TER,https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct,yes
+4,HDFC Flexi Cap Fund (Regular),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / TER (regular plan),https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/regular,yes
+5,HDFC Mid Cap Fund (Direct),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / min SIP / riskometer / TER,https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct,yes
+6,HDFC Mid Cap Fund (Regular),Scheme page,HDFC Mutual Fund (AMC),benchmark / exit load / TER (regular plan),https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/regular,yes
+7,HDFC ELSS Tax Saver (Direct),Scheme page,HDFC Mutual Fund (AMC),lock-in / 80C / benchmark / min application / riskometer,https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct,yes
+8,HDFC ELSS Tax Saver (Regular),Scheme page,HDFC Mutual Fund (AMC),lock-in / min application / benchmark,https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/regular,yes
+9,HDFC Mid-Cap Opportunities Fund - Scheme Summary,SID/Scheme summary (PDF),HDFC Mutual Fund (AMC),benchmark / exit load / annual expense (stated max),https://files.hdfcfund.com/s3fs-public/2023-06/HDFC%20Mid-Cap%20Opportunities%20Fund.pdf,yes
+10,HDFC Top 100 Fund - Digital Factsheet,Factsheet,HDFC Mutual Fund (AMC),benchmark / product label (large cap),https://www.hdfcfund.com/digitalfactsheets/2020-january/innerpages/top-100.html,yes
+11,HDFC Mutual Fund - Statutory disclosures & downloads,Factsheet / KIM / SID hub,HDFC Mutual Fund (AMC),current TER / factsheet / scheme documents,https://www.hdfcfund.com/statutory-disclosure/downloads,partial
+12,CAMS - Capital Gain / Loss Statement,Statement service,CAMS (SEBI-registered RTA),how to obtain capital-gains statement,https://www.camsonline.com/Investors/Statements/Capital-Gain&Capital-Loss-statement,yes
+13,CAMS - Capital Gain online request,Statement service,CAMS (SEBI-registered RTA),capital-gains statement request flow,https://www.camsonline.com/InvestorServices/COL_ISGainStmt.aspx,yes
+14,CAMS - Consolidated Account Statement,Statement service,CAMS (SEBI-registered RTA),how to obtain CAS,https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement,yes
+15,CAMS - Statements hub,Statement service,CAMS (SEBI-registered RTA),list of investor statements,https://www.camsonline.com/Investors/Statements,yes
+16,CAMS - Active / portfolio valuation statement,Statement service,CAMS (SEBI-registered RTA),active statement / valuation,https://www.camsonline.com/Investors/Statements/Active-Statement,yes
+17,KFintech - Consolidated Account Statement,Statement service,KFin Technologies (SEBI-registered RTA),CAS across fund houses,https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement,yes
+18,MF Central,Statement / service portal,CAMS + KFintech (industry portal),consolidated statements & service requests,https://www.mfcentral.com/,partial
+19,AMFI - Investor Education,Investor education,AMFI,exit load / TER / riskometer / general MF facts,https://www.amfiindia.com/investor-corner/investor-center/investor-education.html,partial
+20,SEBI - Investor portal,Regulator / investor education,SEBI,investor protection / safe-refusal educational link,https://investor.sebi.gov.in/,partial
+21,SEBI - Mutual Funds section,Regulator,SEBI,MF regulations / product labelling (riskometer),https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognisedFpi=yes&intmId=12,partial
+22,AMFI - NAV / scheme information,Industry body,AMFI,scheme NAV & identifiers,https://www.amfiindia.com/nav-history-download,partial
