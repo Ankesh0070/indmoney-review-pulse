@@ -1,5 +1,7 @@
 # INDmoney · Mutual Fund FAQ Assistant (Facts-only)
 
+**🔗 Live prototype: [ankesh0070.github.io/indmoney-review-pulse](https://ankesh0070.github.io/indmoney-review-pulse/)**
+
 A small, citation-first FAQ assistant that answers **factual** questions about mutual fund schemes using **official public pages only**. Every answer carries exactly one source link. It refuses opinion/portfolio questions, redirects performance questions to the official factsheet, and never accepts personal data. Themed with INDmoney's violet identity, with a light/dark toggle.
 
 Built for the LIP milestone *"Mutual Fund FAQs (Facts-Only Q&A)"*. Chosen product: **INDmoney**.

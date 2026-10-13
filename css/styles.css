@@ -122,6 +122,15 @@ body{font-family:var(--font);color:var(--ink);background:var(--bg-wash);
 .src:focus-visible{outline:3px solid var(--ind-mint);outline-offset:2px;}
 .updated{font-size:10.5px;color:var(--ink-soft);}
 
+/* Disclaimer pill (shown once, right under the welcome message) */
+.disclaimer-row{display:flex;justify-content:flex-start;padding-left:34px;margin-top:-6px;}
+.disclaimer-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--chip);color:var(--chip-ink);
+  font-size:11px;font-weight:700;letter-spacing:.1px;
+  padding:5px 10px;border-radius:999px;border:1px solid var(--line);
+}
+
 /* Scroll-to-latest button */
 .scroll-btn{
   position:absolute;left:50%;bottom:104px;transform:translateX(-50%) translateY(8px);

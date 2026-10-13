@@ -117,5 +117,12 @@ setTheme(saved);
 document.getElementById('themeBtn').addEventListener('click',
   () => setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
-/* ---- Opening message ---- */
+/* ---- Opening message + disclaimer pill (milestone brief requires this exact note) ---- */
 addBot({ a:'Hi! I answer factual questions about HDFC Large Cap, Flexi Cap, Mid Cap and ELSS Tax Saver — expense ratio, exit load, minimum SIP, lock-in, riskometer, benchmark and statements. Every answer cites one official source. No investment advice.', src:null });
+
+(function addDisclaimerPill(){
+  const row = document.createElement('div'); row.className = 'disclaimer-row';
+  const pill = document.createElement('span'); pill.className = 'disclaimer-pill';
+  pill.textContent = 'Facts-only. No investment advice.';
+  row.appendChild(pill); chat.appendChild(row); scrollDown();
+})();
