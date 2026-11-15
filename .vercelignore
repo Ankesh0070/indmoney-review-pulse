@@ -1,0 +1,9 @@
+# Static site: only index.html (+ output/) is served. Keep Python tooling out of the
+# deployment so Vercel doesn't try to build it as a Python function.
+requirements.txt
+Makefile
+src
+scripts
+tests
+dashboard
+.github
