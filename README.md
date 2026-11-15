@@ -1,115 +1,106 @@
-# INDmoney · Mutual Fund FAQ Assistant (Facts-only)
+# Review Pulse — INDmoney
 
-**🔗 Live prototype: [ankesh0070.github.io/indmoney-review-pulse](https://ankesh0070.github.io/indmoney-review-pulse/)**
+Turn the last **12 weeks** of public **App Store + Play Store** reviews into a one-page **weekly pulse**: priority-ranked themes, real user quotes, three action ideas, early-warning **signals**, and a ready-to-send **email draft**. Built for the LIP challenge. Product: **INDmoney**.
 
-A small, citation-first FAQ assistant that answers **factual** questions about mutual fund schemes using **official public pages only**. Every answer carries exactly one source link. It refuses opinion/portfolio questions, redirects performance questions to the official factsheet, and never accepts personal data. Themed with INDmoney's violet identity, with a light/dark toggle.
+> Public review exports only · No PII anywhere · Max 5 themes · Note ≤ 250 words
 
-Built for the LIP milestone *"Mutual Fund FAQs (Facts-Only Q&A)"*. Chosen product: **INDmoney**.
-
-> ⚠️ Educational prototype. Not investment advice. Not affiliated with INDmoney, HDFC Mutual Fund, CAMS, AMFI or SEBI.
+The dashboard is a single self-contained `index.html` — no backend. You can **drop your own review CSV straight onto it**; redaction, theme assignment and every number are computed locally in your browser (nothing is uploaded).
 
 ---
 
-## Demo
+## What's new in v3
 
-No build, no dependencies, no server required — plain HTML/CSS/JS loaded as static files.
+| Feature | Where |
+|---|---|
+| **Import your own export** — drag & drop App Store Connect / Play Console CSVs (columns auto-mapped) | dashboard + `src/import_reviews.py` |
+| **PII redaction on import** — emails, phones, PAN, Aadhaar-style IDs, folio/account numbers, @handles, links | both |
+| **Auto-themer** — keyword scorer, editable in `data/themes.json` (reproduces all 243 sample labels) | both |
+| **Signals** — mention spikes vs trailing 8 weeks (σ-based), 3-week sustained negativity, real improvements, rating drops | note, email, PDF, dashboard |
+| **Trending phrases** in negative reviews vs the previous 4 weeks; click one to see the reviews | dashboard, email, PDF |
+| **What-if priority weights** — sliders re-rank themes live | dashboard |
+| **Review explorer** — search, theme/rating/scope filters, export filtered CSV | dashboard |
+| **Click any week** on the chart (or ← / →), shareable URL hash, source filter built from the data | dashboard |
+| **Exports** — note `.md`, JSON, cleaned CSV, Slack-formatted summary, print-to-PDF | dashboard |
+| Rating-mix histogram, accessible controls, print stylesheet, remembered dark mode | dashboard |
+| **One core, two runtimes** — `src/pulse.py` and `dashboard/pulse-core.js` are tested to agree byte-for-byte on note, email and every number | `tests/` |
+| Windows-safe (UTF-8 everywhere, no `rm`, no `make` required) | `scripts/build_all.py` |
+
+---
+
+## Quick start
 
 ```bash
-# Just open the file — that's it
-open index.html            # macOS   (Windows: start index.html, Linux: xdg-open index.html)
+pip install -r requirements.txt
+python scripts/build_all.py --test       # note -> pdf -> dashboard, then all tests
+# open index.html  (or: python -m http.server 8000)
 ```
-Or double-click `index.html` in your file manager.
+
+`make all` / `make test` do the same where `make` exists. `build_all.py` never overwrites your data; use `--sample` to regenerate the synthetic CSV.
 
 ### Deploy free on GitHub Pages
-1. Push this repo to GitHub.
-2. **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**, branch `main`, folder `/ (root)`.
-3. Your assistant goes live at `https://<username>.github.io/<repo>/`.
+Push, then **Settings → Pages → Deploy from a branch → `main` / root**. `index.html` is at the repo root on purpose.
 
 ---
+
+## Using your own reviews
+
+**In the browser (fastest):** open `index.html`, click **Import reviews CSV** (or drop files anywhere on the page). Tag the store through the filename (`playstore…`, `appstore…`) or a `source` column. You get the full dashboard, note, email, Slack text and cleaned CSV for that data.
+
+**In the pipeline (for the PDF + committed outputs):**
+
+```bash
+python src/import_reviews.py "appstore.csv=App Store" "playstore.csv=Play Store"
+python scripts/build_all.py --test
+```
+
+Recognised headers include `date / Review Date / Review Last Update Date and Time`, `rating / Star Rating`, `text / Review Text / Body`, `title / Review Title`, `source / Store`. Reviewer name columns are never read. Rows without a valid date or 1–5 rating are skipped and counted in the report.
+
+Public exports only (App Store Connect → *Ratings & Reviews*, Play Console → *Reviews*) — no scraping behind logins.
+
+---
+
+## How it works
+
+```
+data/reviews_sample.csv ─► src/pulse.py ─► output/pulse_data.json ─► weekly_note.md · email_draft.txt · weekly_note.pdf
+                       └► dashboard/pulse-core.js (same logic) ─► index.html
+data/themes.json  = themes + keywords + action ideas (shared by both)
+```
+
+**Priority** (0–100, weights adjustable in the dashboard):
+
+```
+priority = 0.50 × negativity%  +  0.35 × volume_share  +  0.15 × momentum
+```
+`negativity%` = share of 1–2★ this week · `volume_share` = mentions vs busiest theme · `momentum` = week-over-week change in mentions (±9 pts per mention, clamped 0–100).
+
+**Signals**: *spike* = this week's mentions ≥ 1.5σ above the trailing 8-week mean (≥ 3 mentions; σ floored at 0.75 so tiny counts don't fire); *sustained* = ≥ 75% negative for 3 straight weeks; *improving* = negativity down ≥ 20 pts vs 4 weeks ago; plus ±0.30 average-rating moves.
+
+**Trending phrases**: words and two-word phrases in this week's 1–2★ reviews ranked by `count × ln(lift)` against the previous 4 weeks (smoothed), redundant words folded into their phrase.
+
+**Note budget**: `fit_note` picks the richest variant (signals + full footer → shorter footer → fewer signals) that stays ≤ 250 words.
 
 ## Repository structure
 
 ```
-indmoney-mf-faq/
-├── index.html            # markup only — loads css/ and js/
-├── css/
-│   └── styles.css        # theme tokens (light/dark), layout, chat bubbles, composer
-├── js/
-│   ├── corpus.js         # window.MFFAQ_DATA — the fact corpus + source URLs (edit content here)
-│   ├── engine.js          # window.MFFAQ — routing/answer logic, reads only from corpus.js
-│   └── ui.js               # DOM rendering, composer, theme toggle, reads only from window.MFFAQ
-├── data/
-│   ├── sources.csv       # 22 official URLs used, with the fact each covers
-│   ├── sample_qa.md      # sample queries with answers + links
-│   └── disclaimer.md     # the facts-only disclaimer shown in the UI
-├── README.md
-├── LICENSE               # MIT
-└── .gitignore
+index.html                 generated dashboard (served by Pages)
+data/reviews_sample.csv    INPUT (redacted; schema: review_id,date,week,source,rating,title,text,theme)
+data/themes.json           themes, keywords, actions, stopwords
+src/pulse.py               shared core: redaction, classifier, stats, priority, signals, trending, note, email
+src/build_note.py          CSV -> output/{pulse_data.json, weekly_note.md, email_draft.txt}
+src/build_pdf.py           pulse_data.json -> output/weekly_note.pdf (one page)
+src/import_reviews.py      raw exports -> redacted, themed CSV
+src/build_reviews.py       deterministic synthetic sample generator
+dashboard/template.html    UI;  dashboard/pulse-core.js  browser twin of pulse.py
+scripts/inject_data.py     inlines core + config + data into index.html (PII guard)
+scripts/build_all.py       cross-platform runner
+tests/test_pulse.py        19 Python unit tests;  tests/parity.js  JS-vs-Python equivalence + behaviour checks
 ```
 
-Each JS file has one job and reads only from the layer below it: `ui.js` → `window.MFFAQ` (engine.js) → `window.MFFAQ_DATA` (corpus.js). To edit a fact or add a source, change `js/corpus.js` only — `engine.js` and `ui.js` never need to change for a content update.
-
-## Scope
-
-**Product / theme:** INDmoney · **AMC for the corpus:** HDFC Mutual Fund
-
-| Scheme | Category | Benchmark | Min SIP | Exit load | Lock-in |
-|---|---|---|---|---|---|
-| HDFC Large Cap Fund (ex–Top 100) | Large Cap | NIFTY 100 TRI | ₹100 | 1% < 1 yr | None |
-| HDFC Flexi Cap Fund | Flexi Cap | NIFTY 500 TRI | ₹100 | 1% < 1 yr | None |
-| HDFC Mid Cap Fund (ex–Mid-Cap Opportunities) | Mid Cap | NIFTY Midcap 150 TRI | ₹100 | 1% < 1 yr | None |
-| HDFC ELSS Tax Saver | ELSS | NIFTY 500 TRI | ₹500 | Nil | 3 yrs (statutory) |
-
-**Fact types:** expense ratio (TER), exit load, minimum SIP, lock-in, riskometer, benchmark, category, and how to download capital-gains / consolidated statements.
-
-**Sources:** AMC scheme pages (hdfcfund.com), the SEBI-registered registrar CAMS / KFintech, MF Central, AMFI and SEBI investor pages — full list in [`data/sources.csv`](data/sources.csv).
-
----
-
-## How it works (W1–W3)
-
-**W1 — Thinking like a model.** Each query is routed in a fixed order: (1) PII check → (2) advice/opinion → (3) performance/returns → (4) statement guides → (5) scheme + fact lookup. First match wins, so a risky query is caught before any fact is emitted. If the fact is clear but the scheme isn't (or vice-versa), it asks one clarifying question instead of guessing.
-
-**W2 — Prompting / wording.** Answers are ≤3 sentences, plain active voice, no hedging. Refusals stay polite and always offer a relevant educational link. Every answer appends `Last updated from sources:` for transparency.
-
-**W3 — RAG (small corpus).** Retrieval is deterministic keyword + intent matching over the structured corpus in `js/corpus.js`, each fact pre-bound to one official URL. Deterministic retrieval guarantees the citation is correct and rules out hallucinated numbers — which matters more than fluency for a facts-only tool.
-
-**Why expense ratio links out instead of quoting a number.** TER changes monthly and differs between Direct and Regular plans; third-party sites disagreed widely during research (0.58%–1.46% for the same fund). Rather than risk a stale figure, the assistant points to the official scheme page / factsheet where the live TER is published. This also keeps the tool free of performance claims.
-
----
+## Notes on the data
+The bundled CSV is a **synthetic, redacted sample** shaped to tell a realistic story (withdrawal delays spiking in the last 3 weeks, app stability recovering after an update, a mid-window fee controversy). Because it is built from a small set of phrasings, trending phrases there are repetitive; real exports are far more varied. The keyword themer is deliberately simple and transparent — tune `data/themes.json` if your data disagrees, or swap in an LLM classifier restricted to the same 5 labels.
 
 ## Constraints honoured
+Public exports only · no PII in any artifact (guard aborts the build) · ≤ 5 themes (top 3 in the note) · note ≤ 250 words (enforced in code and CI).
 
-- **Public sources only** — AMC / registrar / SEBI / AMFI pages; no app back-end, no third-party blogs as sources.
-- **No PII** — PAN, Aadhaar, account numbers, OTPs, emails and phone numbers are detected and refused; nothing is stored or transmitted.
-- **No performance claims** — does not compute or compare returns; redirects to the official factsheet.
-- **Clarity** — answers ≤3 sentences, one citation each, "Last updated from sources" stamp.
-
----
-
-## Quick test in the browser console
-
-The engine is exposed as `window.MFFAQ`:
-
-```js
-MFFAQ.answer("exit load of HDFC Mid Cap Fund");   // -> {a, src, srcLabel}
-MFFAQ.answer("should I buy HDFC Flexi Cap?");     // -> refusal (advice)
-MFFAQ.hasPII("my PAN is ABCDE1234F");             // -> true
-```
-
----
-
-## Known limits
-
-- Corpus is intentionally small (4 schemes, ~8 fact types). Out-of-scope queries return a help prompt, not a guess.
-- No live data: TER, NAV and riskometer can change; those route to the official page rather than caching numbers. The `Last updated from sources` date is when sources were last checked (23 Jun 2026).
-- Matching is keyword/intent based, not embeddings — robust for listed phrasings, degrades to a clarifying question on unusual wording.
-- Statements are not generated here — it only links to the official CAMS/KFintech/MF Central flows, which run their own identity checks (by design, since those need PII the assistant won't touch).
-- Some regulator/industry links are cited at their official landing pages; deep-link paths on those sites change over time.
-- **Not investment advice. Facts only.**
-
----
-
-## License
-
-[MIT](LICENSE).
+> Educational prototype. Not affiliated with INDmoney, Apple, or Google.

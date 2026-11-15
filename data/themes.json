@@ -1,0 +1,31 @@
+{
+  "_comment": "Single source of truth for themes. Used by the Python pipeline AND the browser dashboard (injected at build time). A keyword ending in $ must match as a whole word; others match as word prefixes. Multi-word phrases score 2, single words score 1.",
+  "themes": [
+    {
+      "name": "Withdrawals & Fund Holds",
+      "action": "Ship a live withdrawal/redemption tracker with honest ETAs and auto-alerts when a payout slips past the promised date.",
+      "keywords": ["withdraw", "redeem", "redemption", "payout", "credited", "credit date", "pending", "settle", "blocked", "switch", "stuck between", "not received", "nothing received", "money back", "where is my money", "fund hold", "units", "sold", "wallet", "bank"]
+    },
+    {
+      "name": "Charges & Fees",
+      "action": "Show a full fee break-up on the confirm screen and post any fee change to an in-app changelog before it takes effect.",
+      "keywords": ["fee", "fees", "charge", "charges", "charged", "brokerage", "markup", "conversion", "fx$", "currency", "amc$", "commission", "pricing", "hidden", "cost", "cheap", "free demat", "expensive", "statement"]
+    },
+    {
+      "name": "Customer Support",
+      "action": "Add a priority escalation path with callback for stuck-money tickets and retire copy-paste macros on fund-hold cases.",
+      "keywords": ["support", "ticket", "reply", "replies", "response", "responses", "helpline", "agent", "resolve", "resolved", "escalat", "complaint", "callback", "follow-up", "follow up", "chat", "email", "copy-paste", "contact", "picks up", "in circles"]
+    },
+    {
+      "name": "App Performance & Reliability",
+      "action": "Hold the post-update stability gains: keep gating releases on a crash-free-session threshold and watch OTP-login during market hours.",
+      "keywords": ["crash", "sync", "syncing", "otp$", "login", "log in", "slow", "laggy", "lag$", "freeze", "frozen", "loading", "load", "splash", "force close", "hangs", "charts", "update", "faster", "snappy", "stable", "net worth", "tracking", "all-in-one", "one place", "home screen", "refresh", "orders place"]
+    },
+    {
+      "name": "Onboarding & KYC",
+      "action": "Make KYC status visible step-by-step with a clear retry on document-upload errors so users aren't stuck in a loop.",
+      "keywords": ["kyc", "onboarding", "signup", "sign up", "sign-up", "account opening", "verification", "verify", "verified", "pan$", "aadhaar", "document", "demat account", "paperless", "step-by-step", "branch visit"]
+    }
+  ],
+  "stopwords": ["the", "and", "for", "that", "this", "with", "was", "are", "has", "have", "had", "not", "but", "you", "your", "can", "its", "it's", "from", "they", "them", "then", "than", "when", "what", "which", "who", "how", "all", "any", "out", "one", "get", "got", "now", "still", "even", "just", "very", "much", "more", "most", "some", "been", "being", "were", "will", "would", "could", "should", "does", "did", "doing", "done", "into", "over", "after", "before", "back", "again", "ever", "every", "never", "only", "also", "too", "there", "their", "here", "about", "because", "while", "same", "other", "such", "own", "off", "per", "via", "app", "like", "use", "used", "using", "don't", "doesn't", "didn't", "cannot", "can't", "i'm", "i've", "me", "my", "mine", "our", "ours", "his", "her", "she", "him", "yet", "let", "may", "might", "must", "say", "said", "make", "made", "take", "took", "going", "went", "come", "came", "time", "times", "days", "day", "week", "weeks", "last", "first", "second", "third", "many", "few", "little", "less", "always", "often", "once", "twice", "another", "something", "nothing", "anything", "everything", "hard", "wish", "main", "seems", "seem", "actually", "really", "nobody", "anyone", "someone", "told", "tell", "tried", "try", "put", "set", "way", "keep", "keeps", "kept", "half", "four", "three", "two", "ten", "year", "years"]
+}

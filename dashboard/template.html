@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Review Pulse — INDmoney</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#5A31F4; --violet-d:#3B1FA8; --violet-soft:#F1EDFF;
+  --ink:#15131F; --mute:#6B6780; --line:#E7E3F3;
+  --neg:#D7263D; --warn:#D88A00; --pos:#159D8C;
+  --bg:#FBFAFF; --panel:#FFFFFF; --panel-2:#F6F4FF;
+  --shadow:0 1px 2px rgba(20,16,40,.04), 0 10px 28px rgba(60,31,168,.06);
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+[data-theme="dark"]{
+  --violet:#9B86FF; --violet-d:#7C63F0; --violet-soft:#241D44;
+  --ink:#F3F1FA; --mute:#A39FBE; --line:#2A2444;
+  --neg:#FF6B7E; --warn:#F0B53A; --pos:#3FD3BF;
+  --bg:#0C0A18; --panel:#161130; --panel-2:#1C1640;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 32px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1140px;margin:0 auto;padding:22px 20px 64px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;border-radius:16px;
+  background:var(--panel);box-shadow:var(--shadow);border:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--violet),var(--violet-d));
+  display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:700;font-size:18px;
+  box-shadow:0 6px 16px rgba(90,49,244,.35)}
+.brand h1{font-family:var(--display);font-size:18px;font-weight:700;margin:0;letter-spacing:-.3px}
+.brand .sub{font-size:11.5px;color:var(--mute);margin-top:1px}
+.ctrls{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.lbl{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.09em;font-weight:600;margin-bottom:5px;display:block}
+select{font-family:var(--body);font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 12px;cursor:pointer}
+select:hover{border-color:var(--violet)}
+.seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--mute);font-family:var(--body);font-size:12.5px;font-weight:500;
+  padding:6px 11px;border-radius:8px;cursor:pointer}
+.seg button.on{background:var(--violet);color:#fff}
+.toggle{width:42px;height:42px;display:grid;place-items:center;border-radius:11px;background:var(--panel-2);
+  border:1px solid var(--line);cursor:pointer;font-size:17px}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:16px}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px;box-shadow:var(--shadow)}
+.kpi .big{font-family:var(--display);font-size:25px;font-weight:700;line-height:1;color:var(--violet)}
+.kpi .cap{font-size:11px;color:var(--mute);margin-top:7px}
+.kpi .delta{font-size:12px;font-weight:600;margin-left:6px}
+.up{color:var(--pos)} .down{color:var(--neg)} .flat{color:var(--mute)}
+
+.grid{display:grid;grid-template-columns:1.62fr 1fr;gap:16px;margin-top:16px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.col{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.card h2{font-family:var(--display);font-size:13px;font-weight:600;margin:0 0 4px;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.card h2 .tick{width:7px;height:7px;border-radius:2px;background:var(--violet)}
+.card .hint{font-size:11px;color:var(--mute);margin:0 0 12px}
+
+/* hero */
+.headline{background:var(--violet-soft);border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin-bottom:14px;
+  font-size:13.5px;color:var(--ink)}
+.headline b{color:var(--violet)}
+.pulse-svg{width:100%;height:150px;display:block;overflow:visible}
+.pulse-path{fill:none;stroke:var(--violet);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 5px 12px rgba(90,49,244,.32))}
+.pulse-dot{fill:var(--violet);stroke:var(--panel);stroke-width:3}
+.grid-line{stroke:var(--line);stroke-width:1}
+.axis{font-family:var(--mono);font-size:9px;fill:var(--mute)}
+.legend{display:flex;gap:18px;font-size:11px;color:var(--mute);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.area{height:9px;border-radius:2px;opacity:.5}
+
+/* priority themes */
+.theme{border-top:1px solid var(--line);padding:13px 0}
+.theme:first-of-type{border-top:none}
+.theme .head{display:flex;align-items:center;gap:11px;cursor:pointer}
+.rank{width:26px;height:26px;flex:none;border-radius:8px;background:var(--violet);color:#fff;
+  font-family:var(--display);font-weight:700;font-size:13px;display:grid;place-items:center}
+.theme .name{font-weight:600;font-size:14px;flex:1;min-width:0}
+.prio{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--violet);background:var(--violet-soft);
+  padding:3px 8px;border-radius:7px;white-space:nowrap}
+.theme .meta{font-size:11.5px;color:var(--mute);margin:7px 0 0 37px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spark{margin:8px 0 0 37px}
+.bar{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:8px 0 0 37px;max-width:calc(100% - 37px)}
+.bar>span{display:block;height:100%;border-radius:4px}
+.caret{color:var(--mute);font-size:12px;transition:transform .2s;margin-left:4px}
+.theme.open .caret{transform:rotate(90deg)}
+.drill{margin:10px 0 0 37px;display:none;border-left:2px solid var(--line);padding-left:12px}
+.theme.open .drill{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1}}
+.rev{padding:7px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.rev:last-child{border-bottom:none}
+.rev .r1{display:flex;justify-content:space-between;color:var(--mute);font-size:10.5px;font-family:var(--mono)}
+.rev .r2{margin-top:2px;color:var(--ink)}
+.stars{color:var(--warn);letter-spacing:1px}
+
+/* priority board + movers */
+.board .row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.board .nm{font-size:12px;flex:none;width:104px}
+.board .track{flex:1;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.board .track>span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet),var(--violet-d))}
+.board .val{font-family:var(--mono);font-size:11px;color:var(--mute);width:34px;text-align:right}
+.mover{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px}
+.mover:first-of-type{border-top:none}
+.chip{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+.chip.r{color:var(--neg);background:color-mix(in srgb,var(--neg) 12%,transparent)}
+.chip.f{color:var(--pos);background:color-mix(in srgb,var(--pos) 14%,transparent)}
+.chip.z{color:var(--mute);background:var(--panel-2)}
+
+/* quotes + actions */
+.quote{border-left:3px solid var(--violet);padding:1px 0 1px 13px;margin:0 0 14px}
+.quote p{margin:0;font-size:13.5px}
+.quote .by{font-size:11px;color:var(--mute);margin-top:5px;font-style:italic}
+ol.actions{margin:0;padding:0;list-style:none;counter-reset:a}
+ol.actions li{counter-increment:a;position:relative;padding:11px 0 11px 34px;font-size:13px;border-top:1px solid var(--line)}
+ol.actions li:first-child{border-top:none}
+ol.actions li::before{content:counter(a);position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:7px;
+  background:var(--violet);color:#fff;font-family:var(--display);font-weight:700;font-size:11px;display:grid;place-items:center}
+
+/* email */
+.mailbox{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;
+  white-space:pre-wrap;max-height:300px;overflow:auto;line-height:1.5}
+.mailbox .subj{font-weight:600;color:var(--violet);margin-bottom:8px}
+.acts{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.toinput{width:100%;font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--panel-2);
+  border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+.toinput:focus{outline:none;border-color:var(--violet)}
+.btn{font-family:var(--body);font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:9px 13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--violet)}
+.btn.primary{background:var(--violet);color:#fff;border-color:var(--violet)}
+.btn.primary:hover{background:var(--violet-d)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);
+  color:var(--bg);padding:10px 18px;border-radius:10px;font-size:13px;transition:.25s;pointer-events:none;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+footer.note{margin-top:22px;font-size:11px;color:var(--mute);line-height:1.7;text-align:center}
+.pill{display:inline-block;font-size:10.5px;font-weight:600;color:var(--violet);background:var(--violet-soft);padding:3px 9px;border-radius:20px;margin:0 3px}
+
+/* ---- v3 additions ---- */
+.pulse-svg{height:auto}
+.pulse-hit{fill:transparent;cursor:pointer}
+.pulse-hit:hover{fill:var(--violet-soft);opacity:.6}
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:14px;padding:10px 14px;border:1px dashed var(--line);border-radius:14px;background:var(--panel)}
+.toolbar .sp{flex:1}
+.toolbar .status{font-size:11.5px;color:var(--mute)}
+.toolbar .status b{color:var(--ink)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.drop{position:fixed;inset:0;display:none;place-items:center;background:color-mix(in srgb,var(--violet) 18%,transparent);z-index:20;
+  font-family:var(--display);font-size:22px;color:var(--violet);backdrop-filter:blur(3px)}
+.drop.on{display:grid}
+.drop div{padding:30px 44px;border:2px dashed var(--violet);border-radius:20px;background:var(--panel)}
+.sig{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.sig:first-of-type{border-top:none}
+.sig .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex:none}
+.sig .tag{font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;white-space:nowrap;margin-left:auto;color:var(--mute);background:var(--panel-2)}
+.sev-high .dot{background:var(--neg)} .sev-medium .dot{background:var(--warn)} .sev-good .dot{background:var(--pos)}
+.empty{font-size:12.5px;color:var(--mute);padding:4px 0}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chipx{font-size:12px;padding:4px 10px;border-radius:20px;background:var(--violet-soft);color:var(--violet);font-weight:500;cursor:pointer;border:0;font-family:var(--body)}
+.chipx small{font-family:var(--mono);opacity:.7;margin-left:5px}
+.chipx:hover{outline:2px solid var(--violet)}
+.dist .row{display:flex;align-items:center;gap:9px;margin-bottom:7px;font-size:11.5px;color:var(--mute)}
+.dist .track{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.dist .track>span{display:block;height:100%;border-radius:4px}
+.dist .n{width:26px;text-align:right;font-family:var(--mono)}
+.sub-h{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute);font-weight:600;margin:16px 0 8px}
+.wts .w{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--mute);margin-bottom:6px}
+.wts .w span:first-child{width:74px}
+.wts .w input{flex:1;accent-color:var(--violet)}
+.wts .w .pc{width:34px;text-align:right;font-family:var(--mono);color:var(--ink)}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.filters input[type=search]{flex:1;min-width:180px;font-family:var(--body);font-size:13px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.filters input:focus{outline:none;border-color:var(--violet)}
+.exp-row{display:grid;grid-template-columns:96px 1fr auto;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px;align-items:start}
+.exp-row .meta{font-family:var(--mono);font-size:10.5px;color:var(--mute);line-height:1.5}
+.exp-row .ttl{font-weight:600}
+.exp-row .th{font-size:10.5px;color:var(--violet);background:var(--violet-soft);padding:2px 8px;border-radius:12px;white-space:nowrap}
+@media(max-width:600px){.exp-row{grid-template-columns:1fr}}
+mark{background:color-mix(in srgb,var(--warn) 35%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.theme .head{outline-offset:3px}
+.theme .head:focus-visible{outline:2px solid var(--violet);border-radius:8px}
+@media print{
+  body{background:#fff}.wrap{max-width:none;padding:0}
+  .toolbar,.ctrls,.explorer,.emailcard,.drop,.toast,.noprint{display:none!important}
+  .card,.kpi,header.top{box-shadow:none}.grid{grid-template-columns:1fr 1fr}
+  .theme .drill{display:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">IND</div>
+      <div><h1>Review Pulse</h1><div class="sub" id="subtitle">Weekly intelligence from App Store + Play Store reviews · INDmoney</div></div>
+    </div>
+    <div class="ctrls">
+      <div><span class="lbl">Source</span><div class="seg" id="srcSeg"></div></div>
+      <div><span class="lbl">Pulse week <span class="noprint" style="text-transform:none;letter-spacing:0;font-weight:400">(use arrow keys)</span></span><select id="weekSel" aria-label="Pulse week"></select></div>
+      <div><span class="lbl">Theme</span><div class="toggle" id="themeBtn" title="Light / dark" role="button" tabindex="0" aria-label="Toggle light and dark mode">◐</div></div>
+    </div>
+  </header>
+
+  <div class="toolbar noprint">
+    <label class="btn sm primary" for="fileIn" style="cursor:pointer">⬆ Import reviews CSV</label>
+    <input type="file" id="fileIn" accept=".csv,text/csv" multiple hidden/>
+    <button class="btn sm" id="resetBtn" hidden>↺ Back to sample</button>
+    <span class="status" id="status"></span>
+    <span class="sp"></span>
+    <button class="btn sm" id="dlNote">⬇ Note .md</button>
+    <button class="btn sm" id="dlJson">⬇ JSON</button>
+    <button class="btn sm" id="dlCsv" title="Cleaned, redacted, themed CSV">⬇ Clean CSV</button>
+    <button class="btn sm" id="slackBtn">Copy for Slack</button>
+    <button class="btn sm" id="printBtn">🖨 Print / PDF</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="card">
+        <h2><span class="tick"></span>12-week sentiment pulse</h2>
+        <p class="hint">Average rating per week over the negative-share band. Click any week to jump to it.</p>
+        <div class="headline" id="headline"></div>
+        <svg class="pulse-svg" id="pulse" viewBox="0 0 640 170"></svg>
+        <div class="legend">
+          <span><i style="background:var(--violet)"></i>Avg rating (auto-zoomed)</span>
+          <span><i class="area" style="background:var(--neg)"></i>Negative share</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>Signals</h2>
+        <p class="hint">Auto-detected: mention spikes vs the trailing 8 weeks, sustained negativity, and real improvements.</p>
+        <div id="signals"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>Top 3 themes — by priority</h2>
+        <p class="hint">Priority blends negativity, share of volume and week-over-week momentum. Tap a theme to read the reviews.</p>
+        <div id="themes"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>In users' words</h2>
+        <div id="quotes"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="tick"></span>Three action ideas</h2>
+        <ol class="actions" id="actions"></ol>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card board">
+        <h2><span class="tick"></span>Priority board — all themes</h2>
+        <p class="hint">Ranked 0–100. Drag the weights to see how the ranking changes.</p>
+        <div id="board"></div>
+        <div class="sub-h">What-if weights</div>
+        <div class="wts" id="wts"></div>
+        <button class="btn sm noprint" id="wReset" style="margin-top:4px">Reset to 50 / 35 / 15</button>
+      </div>
+      <div class="card">
+        <h2><span class="tick"></span>What's changing</h2>
+        <div class="sub-h" style="margin-top:6px">Trending in negative reviews</div>
+        <div class="chips" id="trending"></div>
+        <div class="sub-h">Rating mix this week</div>
+        <div class="dist" id="dist"></div>
+      </div>
+      <div class="card">
+        <h2><span class="tick"></span>Movers — week over week</h2>
+        <div id="movers"></div>
+      </div>
+      <div class="card emailcard">
+        <h2><span class="tick"></span>Email draft</h2>
+        <p class="hint">Set the recipient, then open in Gmail or copy the full text.</p>
+        <label class="lbl" for="toInput">Send to</label>
+        <input id="toInput" class="toinput" type="email" autocomplete="email" placeholder="you@example.com" spellcheck="false"/>
+        <div class="mailbox" id="mailbox"></div>
+        <div class="acts">
+          <button class="btn primary" id="copyBtn">Copy email</button>
+          <a class="btn" id="gmailBtn" target="_blank" rel="noopener" href="#">Open in Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card explorer" style="margin-top:16px">
+    <h2><span class="tick"></span>Review explorer</h2>
+    <p class="hint">Search every review behind the numbers. Click a trending phrase or a theme to filter.</p>
+    <div class="filters">
+      <input type="search" id="q" placeholder="Search text… e.g. withdrawal, OTP, fee" aria-label="Search reviews"/>
+      <select id="fTheme" aria-label="Theme"></select>
+      <select id="fRating" aria-label="Rating">
+        <option value="all">All ratings</option><option value="neg">Negative (1–2★)</option>
+        <option value="neu">Neutral (3★)</option><option value="pos">Positive (4–5★)</option>
+      </select>
+      <select id="fScope" aria-label="Scope"><option value="week">Selected week</option><option value="all">All weeks</option></select>
+      <button class="btn sm" id="dlFiltered">⬇ CSV</button>
+    </div>
+    <div class="hint" id="expCount"></div>
+    <div id="expList"></div>
+    <button class="btn sm" id="expMore" style="margin-top:10px" hidden>Show more</button>
+  </div>
+
+  <footer class="note">
+    <span class="pill">Public reviews only</span><span class="pill">No PII</span>
+    <span class="pill">Max 5 themes</span><span class="pill">Note ≤250 words</span><span class="pill">Imports stay in your browser</span><br/>
+    Built for the LIP challenge · Product: INDmoney · <span id="foot">Redacted sample export, 12-week window.</span>
+  </footer>
+</div>
+<div class="drop" id="drop"><div>Drop review CSVs to analyse</div></div>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+__CORE__
+</script>
+<script>
+const CFG = PulseCore.prepare(__CONFIG__);
+const SAMPLE = __DATA__;
+const SELF_ALIAS = "me+indmoney-pulse@myteam.example";
+const DEFAULT_W = [50,35,15];
+let ROWS = SAMPLE, REPORT = null, P = null, expShown = 15, animate = true;
+const S = { week:null, src:"All", w:[...DEFAULT_W] };
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const negColor = p => p>=60?"var(--neg)":(p>=40?"var(--warn)":"var(--pos)");
+const arrowOf = d => d>0?["▲","up"]:(d<0?["▼","down"]:["=","flat"]);
+const sgn = d => (d>=0?"+":"-")+Math.abs(d).toFixed(2);
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(_){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(_){} } };
+
+function recompute(){
+  P = PulseCore.analyze(ROWS, CFG, { week:S.week, source:S.src, weights:S.w.map(x=>x/100) });
+  S.week = P.pulse_week;
+}
+
+/* ---------- controls ---------- */
+function buildControls(){
+  const srcs = ["All", ...P.sources];
+  if(!srcs.includes(S.src)) S.src = "All";
+  $("srcSeg").innerHTML = srcs.map(s=>`<button data-s="${esc(s)}" class="${s===S.src?"on":""}">${esc(s)}</button>`).join("");
+  $("weekSel").innerHTML = P.weeks.map(w=>`<option value="${esc(w)}">${esc(w)}</option>`).join("");
+  $("weekSel").value = S.week;
+  const themes = CFG.themes.map(t=>t.name);
+  const cur = $("fTheme").value;
+  $("fTheme").innerHTML = `<option value="">All themes</option>`+themes.map(t=>`<option>${esc(t)}</option>`).join("")+`<option value="__none">Unclassified</option>`;
+  $("fTheme").value = cur;
+}
+function setHash(){ try{ history.replaceState(null,"","#w="+encodeURIComponent(S.week)+"&s="+encodeURIComponent(S.src)); }catch(_){} }
+function readHash(){
+  const m = Object.fromEntries((location.hash||"").slice(1).split("&").filter(Boolean).map(p=>p.split("=").map(decodeURIComponent)));
+  if(m.w) S.week = m.w; if(m.s) S.src = m.s;
+}
+
+/* ---------- render ---------- */
+function render(o){
+  o = o || {};
+  recompute(); buildControls(); setHash();
+  const k = P.kpi, [arr,cls] = arrowOf(k.delta), top = P.top_themes;
+  const srcA = k.src["App Store"]||0, srcP = k.src["Play Store"]||0, others = k.n-srcA-srcP;
+  $("subtitle").textContent = `Week of ${P.pulse_week}, ${P.year} · ${REPORT?REPORT.label:"INDmoney sample data"}`;
+  $("kpis").innerHTML = [
+    `<div class="kpi"><div class="big mono">${k.n}</div><div class="cap">reviews this week</div></div>`,
+    `<div class="kpi"><div class="big mono">${k.avg.toFixed(2)}<span class="delta ${cls}">${arr}${sgn(k.delta)}</span></div><div class="cap">avg rating · WoW</div></div>`,
+    `<div class="kpi"><div class="big mono">${k.negPct}%</div><div class="cap">negative (1–2★)</div></div>`,
+    `<div class="kpi"><div class="big mono">${P.all_priorities[0].priority}</div><div class="cap">top priority score</div></div>`,
+    `<div class="kpi"><div class="big mono">${srcA}<span style="font-size:14px;color:var(--mute)"> / ${srcP}${others>0?` / ${others}`:""}</span></div><div class="cap">App / Play${others>0?" / other":""}</div></div>`
+  ].join("");
+  let hl = esc(P.headline);
+  CFG.themes.forEach(t=>{ hl = hl.split(esc(t.name)).join("<b>"+esc(t.name)+"</b>"); });
+  $("headline").innerHTML = hl;
+  drawPulse(); animate = false;
+
+  $("signals").innerHTML = P.signals.length ? P.signals.map(s=>
+    `<div class="sig sev-${s.severity}"><span class="dot"></span><span>${esc(s.text)}</span><span class="tag">${s.type.replace("_"," ")}</span></div>`).join("")
+    : `<div class="empty">No unusual movement this week — volumes and sentiment are within their normal range.</div>`;
+
+  $("themes").innerHTML = top.length ? top.map((t,i)=>{
+    const items = (P._byTheme[t.theme]||[])[P._pi]||[];
+    const drill = items.slice().sort((a,b)=>a.rating-b.rating).slice(0,8).map(r=>
+      `<div class="rev"><div class="r1"><span>${r.date} · ${esc(r.source)}</span><span class="stars">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</span></div><div class="r2">${esc(r.text)}</div></div>`).join("");
+    const wows = t.wow>0?`+${t.wow}`:`${t.wow}`;
+    return `<div class="theme" data-i="${i}">
+      <div class="head" role="button" tabindex="0" aria-expanded="false">
+        <div class="rank">${i+1}</div><div class="name">${esc(t.theme)}</div>
+        <div class="prio">priority ${t.priority}/100</div><span class="caret">▶</span>
+      </div>
+      <div class="meta"><span>${t.count} mentions</span><span style="color:${t.wow>0?'var(--neg)':(t.wow<0?'var(--pos)':'var(--mute)')}">${wows} WoW</span><span>avg ${t.avg.toFixed(2)}★</span><span>${t.negPct}% negative</span>
+        <a href="#" class="chipx" data-theme="${esc(t.theme)}" style="text-decoration:none;padding:2px 9px">explore ↓</a></div>
+      <div class="spark">${sparkline(P.trend[t.theme].counts)}</div>
+      <div class="bar"><span style="width:${t.negPct}%;background:${negColor(t.negPct)}"></span></div>
+      <div class="drill">${drill||'<div class="rev">No reviews in this slice.</div>'}</div>
+    </div>`;}).join("") : `<div class="empty">No themed reviews in this week.</div>`;
+
+  $("board").innerHTML = P.all_priorities.map(t=>
+    `<div class="row"><div class="nm">${esc(t.theme)}</div><div class="track"><span style="width:${t.priority}%"></span></div><div class="val mono">${t.priority}</div></div>`).join("");
+  const wn = ["Negativity","Volume","Momentum"], tot = S.w.reduce((a,b)=>a+b,0)||1;
+  if(o.keepW){ document.querySelectorAll("#wts .pc").forEach((el,i)=>{ el.textContent = Math.round(100*S.w[i]/tot)+"%"; }); }
+  else $("wts").innerHTML = wn.map((n,i)=>`<div class="w"><span>${n}</span><input type="range" min="0" max="100" value="${S.w[i]}" data-i="${i}" aria-label="${n} weight"/><span class="pc">${Math.round(100*S.w[i]/tot)}%</span></div>`).join("");
+
+  $("trending").innerHTML = P.trending.length ? P.trending.map(t=>
+    `<button class="chipx" data-q="${esc(t.term)}" title="${t.count} negative reviews vs ${t.base} in prior 4 weeks (×${t.lift})">${esc(t.term)}<small>${t.count}</small></button>`).join("")
+    : `<div class="empty">Not enough history yet to spot new phrases.</div>`;
+  const mx = Math.max(1,...P.rating_dist), cols = ["var(--neg)","var(--neg)","var(--warn)","var(--pos)","var(--pos)"];
+  $("dist").innerHTML = [5,4,3,2,1].map(r=>`<div class="row"><span style="width:20px">${r}★</span><div class="track"><span style="width:${100*P.rating_dist[r-1]/mx}%;background:${cols[r-1]}"></span></div><span class="n">${P.rating_dist[r-1]}</span></div>`).join("");
+
+  const movers = P.all_priorities.slice().sort((a,b)=>b.wow-a.wow);
+  $("movers").innerHTML = movers.map(m=>{
+    const c = m.wow>0?"r":(m.wow<0?"f":"z"), s = m.wow>0?`▲ +${m.wow}`:(m.wow<0?`▼ ${m.wow}`:"– 0");
+    return `<div class="mover"><span>${esc(m.theme)}</span><span class="chip ${c}">${s}</span></div>`; }).join("");
+
+  $("quotes").innerHTML = P.quotes.length ? P.quotes.map(q=>
+    `<div class="quote"><p>“${esc(q.text)}”</p><div class="by">${q.rating}★ · ${esc(q.source)} · ${esc(q.theme)}</div></div>`).join("") : `<div class="empty">No quotes this week.</div>`;
+  $("actions").innerHTML = P.actions.map(a=>`<li>${esc(a)}</li>`).join("");
+
+  renderEmail(); renderExplorer(true);
+}
+
+function sparkline(c){
+  const mx = Math.max(1,...c), W=180,H=26,n=c.length;
+  const x = i => n>1 ? i*(W/(n-1)) : W/2, y = v => H-2-(v/mx)*(H-4);
+  const line = c.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="12-week mentions trend"><path d="${line}" fill="none" stroke="var(--violet)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${x(n-1)}" cy="${y(c[n-1])}" r="2.4" fill="var(--violet)"/></svg>`;
+}
+
+function drawPulse(){
+  const svg = $("pulse"), W=640,H=170,padX=26,padTop=10,padBot=30, av=P.pulse_avg, ng=P.pulse_neg, n=av.length, ai=P._pi;
+  const vals = av.filter(v=>v!==null);
+  let lo = Math.max(1,Math.min(...vals)-0.2), hi = Math.min(5,Math.max(...vals)+0.2); if(hi-lo<0.4) hi=lo+0.4;
+  const x = i => n>1 ? padX+i*((W-2*padX)/(n-1)) : W/2;
+  const yA = v => padTop+(hi-v)/(hi-lo)*(H-padTop-padBot), yN = v => padTop+(100-v)/100*(H-padTop-padBot);
+  let line="", pen=false; av.forEach((v,i)=>{ if(v===null){pen=false;return;} line+=`${pen?'L':'M'}${x(i).toFixed(1)},${yA(v).toFixed(1)} `; pen=true; });
+  const area = `M${x(0)},${H-padBot} `+ng.map((v,i)=>`L${x(i).toFixed(1)},${yN(v).toFixed(1)}`).join(" ")+` L${x(n-1)},${H-padBot} Z`;
+  let grid=""; for(let k=0;k<=2;k++){ const gv=lo+(hi-lo)*k/2, gy=yA(gv);
+    grid+=`<line class="grid-line" x1="${padX}" y1="${gy}" x2="${W-padX}" y2="${gy}"/><text class="axis" x="${padX-5}" y="${gy+3}" text-anchor="end">${gv.toFixed(1)}</text>`; }
+  const colW = n>1 ? (W-2*padX)/(n-1) : 60;
+  svg.innerHTML = `${grid}<path d="${area}" fill="var(--neg)" opacity="0.10"/><path class="pulse-path" d="${line}"/>`+
+    av.map((v,i)=>v===null?"":`<circle class="pulse-dot" cx="${x(i)}" cy="${yA(v)}" r="${i===ai?5:2.4}" opacity="${i===ai?1:.55}"/>`).join("")+
+    P.weeks.map((w,i)=>(i%2===0||i===ai)?`<text class="axis" x="${x(i)}" y="${H-12}" text-anchor="middle" ${i===ai?'style="font-weight:700;fill:var(--violet)"':''}>${esc(w.split("-")[0])}</text>`:"").join("")+
+    P.weeks.map((w,i)=>`<rect class="pulse-hit" data-w="${esc(w)}" x="${x(i)-colW/2}" y="0" width="${colW}" height="${H-padBot+8}"><title>${esc(w)}${av[i]!==null?` · avg ${av[i].toFixed(2)} · ${P.pulse_vol[i]} reviews`:" · no reviews"}</title></rect>`).join("");
+  if(animate){ const p=svg.querySelector(".pulse-path"); if(p&&line){ const L=p.getTotalLength(); p.style.strokeDasharray=L; p.style.strokeDashoffset=L; p.getBoundingClientRect();
+    p.style.transition="stroke-dashoffset 900ms ease"; p.style.strokeDashoffset=0; } }
+}
+
+/* ---------- email ---------- */
+function renderEmail(){
+  const e = PulseCore.buildEmail(P), toEl = $("toInput");
+  $("mailbox").innerHTML = `<div class="subj">Subject: ${esc(e.subject)}</div>${esc(e.body)}`;
+  if(!toEl.value) toEl.value = SELF_ALIAS;
+  const gm = () => `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEl.value.trim()||SELF_ALIAS)}&su=${encodeURIComponent(e.subject)}&body=${encodeURIComponent(e.body)}`;
+  const sync = () => { $("gmailBtn").href = gm(); }; sync(); toEl.oninput = sync;
+  $("copyBtn").onclick = async()=>{ const ok = await copyText("Subject: "+e.subject+"\n\n"+e.body); toast(ok?"Email copied to clipboard":"Couldn't copy here — select the text and copy manually"); };
+  $("gmailBtn").onclick = async ev=>{ sync(); if(!openUrl(gm())){ ev.preventDefault(); const ok = await copyText(gm()); toast(ok?"Popup blocked — Gmail link copied. Paste it in a new tab.":"Popup blocked — long-press to open Gmail."); } };
+}
+
+/* ---------- explorer ---------- */
+function filtered(){
+  const q = $("q").value.trim().toLowerCase(), th = $("fTheme").value, rt = $("fRating").value, scope = $("fScope").value;
+  const pool = scope==="week" ? (P._byW[P._pi]||[]) : P._byW.flat();
+  return pool.filter(r=>
+    (!th || (th==="__none" ? !r.theme : r.theme===th)) &&
+    (rt==="all" || (rt==="neg"?r.rating<=2:rt==="neu"?r.rating===3:r.rating>=4)) &&
+    (!q || (r.title+" "+r.text).toLowerCase().includes(q))
+  ).sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:a.rating-b.rating);
+}
+function renderExplorer(reset){
+  if(reset) expShown = 15;
+  const list = filtered(), q = $("q").value.trim();
+  const hi = t => { t = esc(t); if(!q) return t; const rx = new RegExp("("+esc(q).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"); return t.replace(rx,"<mark>$1</mark>"); };
+  $("expCount").textContent = `${list.length} review${list.length===1?"":"s"}${$("fScope").value==="week"?` in ${P.pulse_week}`:" in the window"}`;
+  $("expList").innerHTML = list.slice(0,expShown).map(r=>
+    `<div class="exp-row"><div class="meta">${r.date}<br>${esc(r.source)}<br><span class="stars">${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</span></div>
+     <div>${r.title?`<div class="ttl">${hi(r.title)}</div>`:""}<div>${hi(r.text)}</div></div>
+     <div>${r.theme?`<span class="th">${esc(r.theme)}</span>`:`<span class="th" style="color:var(--mute);background:var(--panel-2)">unclassified</span>`}</div></div>`).join("") || `<div class="empty">Nothing matches these filters.</div>`;
+  $("expMore").hidden = list.length<=expShown;
+}
+
+/* ---------- import / export ---------- */
+const guessSource = n => /play|google|android/i.test(n)?"Play Store":(/app ?store|apple|ios/i.test(n)?"App Store":"Imported");
+async function importFiles(files){
+  const raw=[]; const names=[];
+  for(const f of files){
+    if(!/\.csv$/i.test(f.name)&&f.type!=="text/csv"){ toast(`${f.name}: not a CSV`); continue; }
+    const rows = PulseCore.parseCSV(await f.text()); const src = guessSource(f.name);
+    rows.forEach(r=>{ if(!("source" in r)&&!("Source" in r)&&!("Store" in r)&&!("Platform" in r)) r.source = src; });
+    raw.push(...rows); names.push(f.name);
+  }
+  if(!raw.length) return;
+  const [rows, rep] = PulseCore.normalise(raw, CFG, { defaultSource:"Imported", keepTheme:true });
+  if(!rows.length){ toast("No usable rows: need date, rating and text columns"); return; }
+  ROWS = rows; REPORT = Object.assign(rep,{ label:names.join(" + ") }); S.week=null; S.src="All"; animate=true;
+  render(); updateStatus(); toast(`Imported ${rows.length} reviews · ${rep.redactions} PII redactions`);
+}
+function updateStatus(){
+  $("resetBtn").hidden = !REPORT;
+  $("status").innerHTML = REPORT
+    ? `<b>${REPORT.out}</b> reviews from ${esc(REPORT.label)} · <b>${REPORT.redactions}</b> PII redactions · ${REPORT.auto_themed} auto-themed · ${REPORT.unclassified} unclassified${REPORT.dropped?` · ${REPORT.dropped} rows skipped`:""} · processed locally`
+    : `Showing the built-in sample. Import your own App Store / Play Console export — PII is redacted and themes assigned in your browser; nothing is uploaded.`;
+  $("foot").textContent = REPORT ? "Your imported export, processed locally in the browser." : "Redacted sample export, 12-week window.";
+}
+function download(name, text, type){
+  try{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:type||"text/plain"})); a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500); toast("Downloaded "+name); }catch(_){ toast("Download blocked here — open in a normal browser tab"); }
+}
+function slackText(){
+  const k=P.kpi, [a]=arrowOf(k.delta);
+  const L=[`*INDmoney Review Pulse — ${P.pulse_week}, ${P.year}*`, `${k.n} reviews · avg ${k.avg.toFixed(2)} ${a} ${sgn(k.delta)} WoW · ${k.negPct}% negative`, `> ${P.headline}`];
+  if(P.signals.length) L.push("", "*Signals*", ...P.signals.slice(0,3).map(s=>`• ${s.text}`));
+  L.push("", "*Top themes*", ...P.top_themes.map((t,i)=>`${i+1}. ${t.theme} — priority ${t.priority}/100 (${t.count} mentions, ${t.negPct}% neg)`));
+  L.push("", "*Actions*", ...P.actions.map((x,i)=>`${i+1}. ${x}`)); return L.join("\n");
+}
+
+/* ---------- helpers ---------- */
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2600); }
+async function copyText(text){
+  try{ await navigator.clipboard.writeText(text); return true; }catch(_){}
+  try{ const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.top="-1000px"; ta.setAttribute("readonly",""); document.body.appendChild(ta); ta.focus(); ta.select();
+    const ok=document.execCommand("copy"); ta.remove(); return ok; }catch(_){ return false; }
+}
+function openUrl(url){
+  let w=null; try{ w=window.open(url,"_blank","noopener"); }catch(_){} if(w) return true;
+  try{ const a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener noreferrer"; document.body.appendChild(a); a.click(); a.remove(); return true; }catch(_){ return false; }
+}
+function goWeek(w){ S.week=w; animate=true; render(); }
+
+/* ---------- events ---------- */
+const root = document.documentElement;
+function setTheme(t){ root.setAttribute("data-theme",t); store.set("rp-theme",t); }
+$("themeBtn").onclick = ()=>{ setTheme(root.getAttribute("data-theme")==="dark"?"light":"dark"); };
+$("themeBtn").onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("themeBtn").click(); } };
+$("srcSeg").onclick = e=>{ const b=e.target.closest("button"); if(!b) return; S.src=b.dataset.s; animate=true; render(); };
+$("weekSel").onchange = e=>goWeek(e.target.value);
+$("pulse").onclick = e=>{ const r=e.target.closest(".pulse-hit"); if(r) goWeek(r.dataset.w); };
+$("themes").onclick = e=>{
+  const ex = e.target.closest("[data-theme]");
+  if(ex){ e.preventDefault(); $("fTheme").value=ex.dataset.theme; $("fScope").value="week"; renderExplorer(true); $("q").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  const h = e.target.closest(".head"); if(h){ const t=h.parentNode; t.classList.toggle("open"); h.setAttribute("aria-expanded",t.classList.contains("open")); }
+};
+$("themes").onkeydown = e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("head")){ e.preventDefault(); e.target.click(); } };
+$("trending").onclick = e=>{ const b=e.target.closest("[data-q]"); if(!b) return; $("q").value=b.dataset.q; $("fRating").value="neg"; $("fTheme").value=""; $("fScope").value="week"; renderExplorer(true); $("q").scrollIntoView({behavior:"smooth",block:"center"}); };
+$("wts").oninput = e=>{ const i=e.target.dataset.i; if(i===undefined) return; S.w[+i]=+e.target.value; render({keepW:true}); };
+$("wReset").onclick = ()=>{ S.w=[...DEFAULT_W]; render(); };
+["q","fTheme","fRating","fScope"].forEach(id=>$(id).addEventListener("input",()=>renderExplorer(true)));
+$("expMore").onclick = ()=>{ expShown+=25; renderExplorer(false); };
+$("dlFiltered").onclick = ()=>download("reviews_filtered.csv", PulseCore.toCSV(filtered()), "text/csv");
+$("dlNote").onclick = ()=>download(`weekly_note_${P.pulse_week.replace(/\s/g,"")}.md`, PulseCore.fitNote(P), "text/markdown");
+$("dlJson").onclick = ()=>download("pulse_data.json", JSON.stringify(P,(k,v)=>k.startsWith("_")?undefined:v,2), "application/json");
+$("dlCsv").onclick = ()=>download("reviews_clean.csv", PulseCore.toCSV(ROWS), "text/csv");
+$("slackBtn").onclick = async()=>toast(await copyText(slackText())?"Slack summary copied":"Couldn't copy here");
+$("printBtn").onclick = ()=>window.print();
+$("fileIn").onchange = e=>{ importFiles([...e.target.files]); e.target.value=""; };
+$("resetBtn").onclick = ()=>{ ROWS=SAMPLE; REPORT=null; S.week=null; S.src="All"; animate=true; render(); updateStatus(); toast("Back to the sample data"); };
+let dragN=0;
+addEventListener("dragenter",e=>{ if(e.dataTransfer&&[...e.dataTransfer.types].includes("Files")){ dragN++; $("drop").classList.add("on"); } });
+addEventListener("dragleave",()=>{ dragN=Math.max(0,dragN-1); if(!dragN) $("drop").classList.remove("on"); });
+addEventListener("dragover",e=>e.preventDefault());
+addEventListener("drop",e=>{ e.preventDefault(); dragN=0; $("drop").classList.remove("on"); if(e.dataTransfer.files.length) importFiles([...e.dataTransfer.files]); });
+addEventListener("keydown",e=>{
+  if(/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)||e.metaKey||e.ctrlKey||e.altKey) return;
+  const i = P.weeks.indexOf(S.week);
+  if(e.key==="ArrowLeft"&&i>0) goWeek(P.weeks[i-1]); if(e.key==="ArrowRight"&&i<P.weeks.length-1) goWeek(P.weeks[i+1]);
+});
+
+/* ---------- boot ---------- */
+setTheme(store.get("rp-theme") || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+readHash(); render(); updateStatus();
+</script>
+</body>
+</html>
